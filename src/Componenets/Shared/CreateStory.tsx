@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { useCreateStoryMutation } from '../../Apis/storyApi';
 import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
+import toastNotify from '../../Taghelper/toastNotify';
 
-const CreateStory: React.FC = () => {
+interface CreateStoryProps {
+  refetch: () => void; 
+}
+
+const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
   const [image, setImage] = useState<File | null>(null);
   const [createStory] = useCreateStoryMutation();
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
@@ -21,8 +26,11 @@ const CreateStory: React.FC = () => {
         setIsSubmitting(true);
         const result = await createStory(formData).unwrap();
         console.log('Story created:', result);
-        setImage(null); // Clear the image input after successful submission
+        toastNotify("The Stroy has been Created","success")
+        setImage(null); // Reset image after successful upload
+        refetch(); // Trigger refetch after creating the story
       } catch (error) {
+        toastNotify("The Stroy has not Created!!","error")
         console.error("Failed to create story:", error);
       } finally {
         setIsSubmitting(false);
@@ -31,7 +39,7 @@ const CreateStory: React.FC = () => {
   };
 
   return (
-    <div className=" p-6 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg shadow-lg">
+    <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold text-center text-white mb-4">Share Your Story</h2>
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <input 

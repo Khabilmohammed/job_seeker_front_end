@@ -1,43 +1,35 @@
 // services/experienceApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 const experienceApi = createApi({
   reducerPath: "experienceApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5134/api/experience",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     getExperiences: builder.query({
       query: (userId) => ({
-        url: "",
+        url: "experience",
         method: "GET",
         params: { userId }, 
       }),
     }),
     createExperience: builder.mutation({
       query: (experienceData) => ({
-        url: "",
+        url: "experience",
         method: "POST",
         body: experienceData,
       }),
     }),
     updateExperience: builder.mutation({
       query: ({ id, ...updatedData }) => ({
-        url: `${id}`,
+        url: `experience/${id}`,
         method: "PUT",
         body: updatedData,
       }),
     }),
     deleteExperience: builder.mutation({
       query: (id) => ({
-        url: `${id}`,
+        url: `experience/${id}`,
         method: "DELETE",
       }),
     }),

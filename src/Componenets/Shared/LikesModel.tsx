@@ -1,4 +1,3 @@
-// LikesModal.tsx
 import React from 'react';
 
 interface LikesModalProps {

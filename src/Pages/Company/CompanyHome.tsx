@@ -1,7 +1,6 @@
 import React from 'react'
 import { CreateStory, Feed, StorySection } from '../../Componenets'
-import { useSelector } from 'react-redux';
-import { Rootstate } from '../../Storage/Redux/store';
+
 
 function CompanyHome() {
   return (
@@ -12,7 +11,7 @@ function CompanyHome() {
         {/* Create Story Section */}
         <div className="mb-4 p-4 bg-white shadow-sm rounded-lg">
           <h2 className="text-xl font-bold text-gray-800 mb-2">Create Story</h2>
-          <CreateStory />
+          <CreateStory refetch={() => {}} />
         </div>
 
         {/* Story Section */}

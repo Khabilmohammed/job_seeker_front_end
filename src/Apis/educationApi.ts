@@ -1,27 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 const educationApi = createApi({
   reducerPath: "educationApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5134/api/Education",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     getEducationById: builder.query({
-      query: (id) => `${id}`, // Simplified, automatically uses GET method
+      query: (id) => `Education/${id}`, 
     }),
     getEducationsByUser: builder.query({
-      query: (userId) => `user/${userId}`,
+      query: (userId) => `Education/user/${userId}`,
     }),
     createEducation: builder.mutation({
       query: ({ formData, userId }) => ({
-        url: "create",
+        url: "Education/create",
         method: "POST",
         body: formData,
         headers: { UserId: userId },
@@ -29,14 +21,14 @@ const educationApi = createApi({
     }),
     updateEducation: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `${id}`,
+        url: `Education/${id}`,
         method: "PUT",
         body: formData,
       }),
     }),
     deleteEducation: builder.mutation({
       query: (id) => ({
-        url: `${id}`,
+        url: `Education/${id}`,
         method: "DELETE",
       }),
     }),

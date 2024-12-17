@@ -68,6 +68,32 @@ const ChatWindow: React.FC<Props> = ({
         connection?.off("NewMessage");
     };
 }, [connection]);
+useEffect(() => {
+  if (connection) {
+    connection.on("MessageDeleted", (messageId: number) => {
+      setMessages((prevMessages) =>
+        prevMessages.filter((message) => message.messageId !== messageId)
+      );
+    });
+  }
+  return () => {
+    connection?.off("MessageDeleted");
+  };
+}, [connection]);
+
+const handleDeleteMessage = async (messageId: number) => {
+  if (connection) {
+    const confirmDelete = window.confirm("Are you sure you want to delete this message?");
+    if (!confirmDelete) return;
+
+    try {
+      await connection.invoke("DeleteMessage", messageId);
+      console.log(`Message with ID ${messageId} deleted successfully.`);
+    } catch (err) {
+      console.error("DeleteMessage Error: ", err);
+    }
+  }
+};
 
   const handleSendMessage = async () => {
     if (newMessage.trim() && connection && selectedUser) {
@@ -128,7 +154,7 @@ const ChatWindow: React.FC<Props> = ({
                     {new Date(message.sentAt).toLocaleTimeString()}
                   </div>
                   <button
-                    onClick={() => onDeleteMessage(message.messageId)}
+                    onClick={() => handleDeleteMessage(message.messageId)}
                     className="ml-2 text-red-500 hover:text-red-700"
                   >
                     <FaTrash />

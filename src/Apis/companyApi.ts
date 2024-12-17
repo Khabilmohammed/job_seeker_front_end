@@ -1,34 +1,26 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 const companyApi = createApi({
   reducerPath: "companyApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5134/api/Company",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     getCompanyById: builder.query({
-      query: (id) => `${id}`,
+      query: (id) => `Company/${id}`,
     }),
     getCompanyByUserId: builder.query({
-      query: (userId) => `user/${userId}`,
+      query: (userId) => `Company/user/${userId}`,
     }),
     createCompany: builder.mutation({
       query: (companyData) => ({
-        url: "create",
+        url: "Company/create",
         method: "POST",
         body: companyData,
       }),
     }),
     updateCompany: builder.mutation({
       query: ({ id, companyData }) => ({
-        url: `${id}`,
+        url: `Company/${id}`,
         method: "PUT",
         body: companyData,
         headers: {

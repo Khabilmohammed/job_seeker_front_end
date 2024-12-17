@@ -1,53 +1,45 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 const followApi = createApi({
   reducerPath: "followApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5134/api/Follow", // Backend base route
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     followUser: builder.mutation({
       query: (followDto: { followerId: string; followingId: string }) => ({
-        url: `follow`,
+        url: `Follow/follow`,
         method: "POST",
         body: followDto,
       }),
     }),
     unfollowUser: builder.mutation({
       query: (followDto: { followerId: string; followingId: string }) => ({
-        url: `unfollow`,
+        url: `Follow/unfollow`,
         method: "POST",
         body: followDto,
       }),
     }),
     getFollowers: builder.query({
       query: (userId: string) => ({
-        url: `${userId}/followers`,
+        url: `Follow/${userId}/followers`,
         method: "GET",
       }),
     }),
     getFollowing: builder.query({
       query: (userId: string) => ({
-        url: `${userId}/following`,
+        url: `Follow/${userId}/following`,
         method: "GET",
       }),
     }),
     isFollowing: builder.query({
       query: ({ followerId, followingId }: { followerId: string; followingId: string }) => ({
-        url: `${followerId}/${followingId}/status`,
+        url: `Follow/${followerId}/${followingId}/status`,
         method: "GET",
       }),
     }),
     getPeopleYouMayKnow: builder.query({
       query: ({ userId, count }: { userId: string; count: number }) => ({
-        url: `${userId}/people-you-may-know`,
+        url: `Follow/${userId}/people-you-may-know`,
         method: "GET",
         params: { count },
       }),

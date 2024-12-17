@@ -1,52 +1,44 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 const userManagementApi = createApi({
     reducerPath: "userManagementApi",
-    baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5134/api/userManagement",
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
+    baseQuery: createBaseQuery(),
     endpoints: (builder) => ({
         getUserById: builder.query({
-            query: (userId) => `getuserid/${userId}`,
+            query: (userId) => `userManagement/getuserid/${userId}`,
         }),
         getAllUsers: builder.query({
-            query: () => 'getuserall',
+            query: () => 'userManagement/getuserall',
         }),
         deleteUser: builder.mutation({
             query: (userId) => ({
-                url: `delete/${userId}`,
+                url: `userManagement/delete/${userId}`,
                 method: "DELETE",
             }),
         }),
         getUserDetails: builder.query({
-            query: (userId) => `details/${userId}`,
+            query: (userId) => `userManagement/details/${userId}`,
         }),
         getUsersByRole: builder.query({
-            query: (role) => `role/${role}`,
+            query: (role) => `userManagement/role/${role}`,
         }),
         deactivateUser: builder.mutation({
             query: (userId) => ({
-                url: `deactivate/${userId}`,
+                url: `userManagement/deactivate/${userId}`,
                 method: "POST",
             }),
         }),
         changeUserRole: builder.mutation({
             query: (request) => ({
-                url: 'changeuserrole',
+                url: 'userManagement/changeuserrole',
                 method: "POST",
                 body: request,
             }),
         }),
         updateUser: builder.mutation({
             query: (formData) => ({
-                url: "update",
+                url: "userManagement/update",
                 method: "PUT",
                 body: formData,
             }),

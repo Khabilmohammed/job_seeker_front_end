@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetPostByuserIdQuery } from "../../Apis/postApi";
 import { Rootstate } from "../../Storage/Redux/store";
 import { useSelector } from "react-redux";
-import { PostModel } from "../../Interfaces/index"; // Assuming this is your PostModel
+import { PostModel } from "../../Interfaces/index"; 
 
 const UserPosts: React.FC = () => {
   const navigate = useNavigate();

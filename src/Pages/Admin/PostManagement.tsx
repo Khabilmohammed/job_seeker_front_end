@@ -1,26 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDeletePostMutation, useGetAllPostsQuery } from '../../Apis/postApi';
-import {
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TableContainer,
-  Pagination,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from '@windmill/react-ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, TableRow, TableCell } from '@windmill/react-ui';
 import toastNotify from '../../Taghelper/toastNotify';
+import TableComponent from '../../Componenets/Shared/TableComponent';
 
 const PostManagement: React.FC = () => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllPostsQuery({});
   const postsData = data.result || [];
-
   const [page, setPage] = useState<number>(1);
   const [paginatedData, setPaginatedData] = useState<any[]>([]);
   const resultsPerPage = 10;
@@ -58,15 +44,50 @@ const PostManagement: React.FC = () => {
       try {
         // Call the deletePost mutation with the post ID
         await deletePost(postToDelete).unwrap();
-        toastNotify("The post has been deleted", 'success');
+        toastNotify('The post has been deleted', 'success');
         refetch(); // Refetch posts to update the list
       } catch (error: any) {
-        console.error("Delete failed: ", error); // Log error details
-        toastNotify("Failed to delete the post. Please try again.", 'error');
+        console.error('Delete failed: ', error); // Log error details
+        toastNotify('Failed to delete the post. Please try again.', 'error');
       }
       closeModal();
     }
   };
+
+  const renderRow = (post: any) => (
+    <TableRow key={post.postId}>
+      <TableCell>
+        <span>{post.postId}</span>
+      </TableCell>
+      <TableCell>
+        <span>{post.content}</span>
+      </TableCell>
+      <TableCell>
+        <img
+          src={post.images[0].imageUrl}
+          alt="Post"
+          className="w-20 h-20 rounded object-cover"
+        />
+      </TableCell>
+      <TableCell>
+        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+      </TableCell>
+      <TableCell>
+        <span>{post.likeCount}</span>
+      </TableCell>
+      <TableCell>
+        <span>{post.commentCount}</span>
+      </TableCell>
+      <TableCell>
+        <button
+          onClick={() => openModal(post.id)}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          {isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
+      </TableCell>
+    </TableRow>
+  );
 
   return (
     <>
@@ -74,65 +95,29 @@ const PostManagement: React.FC = () => {
       {isLoading ? (
         <p>Loading posts...</p>
       ) : error ? (
-        <p>Error loading posts:</p> // Display error message
+        <p>Error loading posts:</p>
       ) : (
-        <>
-          <TableContainer>
-            <Table>
-              <TableHeader>
-                <tr>
-                  <TableCell>Post ID</TableCell>
-                  <TableCell>Content</TableCell>
-                  <TableCell>Created At</TableCell>
-                  <TableCell>Actions</TableCell>
-                </tr>
-              </TableHeader>
-              <TableBody>
-                {paginatedData.map((post) => (
-                  <TableRow key={post.id}>
-                    <TableCell>
-                      <span>{post.id}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>{post.content}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => openModal(post.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                      >
-                        {isDeleting ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <TableFooter>
-              <Pagination
-                totalResults={postsData.length}
-                resultsPerPage={resultsPerPage}
-                label="Table navigation"
-                onChange={onPageChange}
-              />
-            </TableFooter>
-          </TableContainer>
-          {/* Delete confirmation modal */}
-          <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <ModalHeader>Confirm Deletion</ModalHeader>
-            <ModalBody>Are you sure you want to delete this post?</ModalBody>
-            <ModalFooter>
-              <Button onClick={closeModal}>Cancel</Button>
-              <Button onClick={confirmDelete} disabled={isDeleting}>
-                {isDeleting ? 'Deleting...' : 'Confirm'}
-              </Button>
-            </ModalFooter>
-          </Modal>
-        </>
+        <TableComponent
+          headers={['Post ID', 'Description', 'Image', 'Created At', 'Like Count', 'Comment Count', 'Actions']}
+          data={paginatedData}
+          resultsPerPage={resultsPerPage}
+          totalResults={postsData.length}
+          onPageChange={onPageChange}
+          renderRow={renderRow}
+        />
       )}
+
+      {/* Delete confirmation modal */}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <ModalHeader>Confirm Deletion</ModalHeader>
+        <ModalBody>Are you sure you want to delete this post?</ModalBody>
+        <ModalFooter>
+          <Button onClick={closeModal}>Cancel</Button>
+          <Button onClick={confirmDelete} disabled={isDeleting}>
+            {isDeleting ? 'Deleting...' : 'Confirm'}
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

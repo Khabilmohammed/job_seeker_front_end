@@ -1,39 +1,31 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
 
 export const storyApi = createApi({
   reducerPath: "storyApi", 
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5134/api/stories",  
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token"); 
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`); 
-      }
-      return headers; 
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
    
     getStoriesByUserId: builder.query({
-      query: (userId) => `/user/${userId}`,
+      query: (userId) => `stories/user/${userId}`,
     }),
     getArchivedStories: builder.query({
-      query: (userId) => `/archived?userId=${userId}`,  
+      query: (userId) => `stories/archived?userId=${userId}`,  
     }),
     getStoriesFromOthers: builder.query({
-      query: (userId) => `/otherstories/${userId}`, 
+      query: (userId) => `stories/otherstories/${userId}`, 
     }),
 
     createStory: builder.mutation({
       query: (storyData) => ({
-        url: "/create",  
+        url: "stories/create",  
         method: "POST",  
         body: storyData, 
       }),
     }),
     deleteStory: builder.mutation({
       query: (storyId) => ({
-        url: `/${storyId}`, 
+        url: `stories/${storyId}`, 
         method: "DELETE", 
       }),
     }),

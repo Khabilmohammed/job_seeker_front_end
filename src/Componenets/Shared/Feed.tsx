@@ -1,77 +1,95 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useGetAllPostsQuery } from '../../Apis/postApi';
 import { PostModel } from '../../Interfaces';
-import PostCreateComponent from './PostcreateComponent';
 import PostCard from './PostCard';
 import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
+import PostCreateComponent from './PostcreateComponent';
 
 const Feed = () => {
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
   const userName = useSelector((state: Rootstate) => state.userAuthStore.username);
 
   // States for pagination and storing posts
-  const [page, setPage] = useState(1);
-  const [postsList, setPostsList] = useState<PostModel[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1); 
+  const [postsList, setPostsList] = useState<PostModel[]>([]); 
+  const [hasMore, setHasMore] = useState(true); 
 
   // Fetch posts using RTK Query with pagination
-  const { data, error, isLoading, isFetching } = useGetAllPostsQuery({ page, limit: 8 });
-  console.log(data);
+  const { data, error, isLoading, isFetching, refetch } = useGetAllPostsQuery({ page, limit: 8 });
 
-  // Append new posts to the list when `data` changes
+  // Append new posts to the list whenever `data` changes
   useEffect(() => {
     if (data?.result) {
       setPostsList((prevPosts) => [...prevPosts, ...data.result]);
-      if (data.result.length < 8) setHasMore(false); // No more posts to load if fewer than 8 returned
+      if (data.result.length < 8) setHasMore(false); // If fewer than 8 posts are returned, no more posts to load
     }
   }, [data]);
 
-  // Loading and error handling
+  // Intersection Observer setup
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastPostRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (isFetching) return; // Avoid setting up the observer if data is being fetched
+      if (observer.current) observer.current.disconnect(); 
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1); // Load the next page when the last post is visible
+        }
+      });
+      if (node) observer.current.observe(node); // Observe the new last post
+    },
+    [isFetching, hasMore]
+  );
+
   if (isLoading && page === 1) {
     return <div className="text-center text-gray-500">Loading posts...</div>;
   }
 
+  // Handle API errors
   if (error) {
     return <div className="text-center text-red-500">Failed to load posts. Please try again later.</div>;
   }
 
-  // Handler for loading the next page
-  const loadMorePosts = () => {
-    if (!isFetching && hasMore) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
   return (
     <div className="p-7 flex flex-col md:flex-row md:space-x-8 bg-white min-h-screen">
       <div className="flex-1 space-y-6">
-        <PostCreateComponent />
+        {/* Post creation component */}
+        <PostCreateComponent
+          onPostCreated={() => {
+            setPage(1); // Reset page to the first page
+            setPostsList([]); // Clear posts list to refetch fresh data
+            refetch(); // Trigger the API to refetch posts
+          }}
+        />
 
-        {/* Display Posts */}
+        {/* Render the list of posts */}
         {postsList.length > 0 ? (
-          postsList.map((post: PostModel) => (
-            <div key={post.postId} className="animate-fadeIn">
-              <PostCard post={post} userId={userId} userName={userName} />
-            </div>
-          ))
+          postsList.map((post: PostModel, index) => {
+            // Attach the observer to the last post
+            if (index === postsList.length - 1) {
+              return (
+                <div key={post.postId} className="animate-fadeIn" ref={lastPostRef}>
+                  <PostCard post={post} userId={userId} userName={userName} />
+                </div>
+              );
+            } else {
+              return (
+                <div key={post.postId} className="animate-fadeIn">
+                  <PostCard post={post} userId={userId} userName={userName} />
+                </div>
+              );
+            }
+          })
         ) : (
           <div className="text-center text-gray-500">No posts available.</div>
         )}
 
-        {/* Load More Button */}
-        {hasMore && !isFetching && (
-          <button
-            onClick={loadMorePosts}
-            className="mt-4 mx-auto block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Load More Posts
-          </button>
-        )}
+        {/* Loading more posts indicator */}
+        {isFetching && <div className="text-center mt-4">Loading more posts...</div>}
         {!hasMore && (
           <div className="text-center mt-4 text-gray-500">No more posts to load</div>
         )}
-        {isFetching && <div className="text-center mt-4">Loading more posts...</div>}
       </div>
     </div>
   );

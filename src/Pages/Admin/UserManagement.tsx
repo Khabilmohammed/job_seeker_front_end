@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDeleteUserMutation, useGetAllUsersQuery, useDeactivateUserMutation, useChangeUserRoleMutation } from '../../Apis/userManagementApi';
-import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Pagination, Badge, Avatar, Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import toastNotify from '../../Taghelper/toastNotify';
+import { FaUserAlt } from 'react-icons/fa';
+import { Badge, Avatar, Button, Modal, ModalBody, ModalFooter, ModalHeader } from '@windmill/react-ui';
+import TableComponent from '../../Componenets/Shared/TableComponent';
 
 const UserManagement: React.FC = () => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllUsersQuery({});
   const usersData = data.result || [];
-
   const [page, setPage] = useState<number>(1);
   const [paginatedData, setPaginatedData] = useState<any[]>([]);
   const resultsPerPage = 15;
@@ -78,8 +79,55 @@ const UserManagement: React.FC = () => {
     } catch (error) {
       toastNotify("Failed to change user role", 'error');
     }
-    setSelectedUser(null); // Reset user selection
+    setSelectedUser(null);
   };
+
+  // Define the row rendering logic
+  const renderRow = (user: any) => (
+    <tr key={user.id}>
+      <td>
+        {user.profilePicture ? (
+          <Avatar src={user.profilePicture} alt="User image" />
+        ) : (
+          <Badge type="neutral" className="p-1 rounded-full">
+            <FaUserAlt className="w-6 h-6 text-gray-600" />
+          </Badge>
+        )}
+      </td>
+      <td>
+        <Badge>{user.firstName}</Badge>
+      </td>
+      <td>
+        <Badge>{user.lastName}</Badge>
+      </td>
+      <td>
+        <span>{user.email}</span>
+      </td>
+      <td>
+        <span>{user.role}</span>
+      </td>
+      <td>
+        <button
+          onClick={() => openModal(user.id)}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Delete
+        </button>
+        <button
+          onClick={() => handleDeactivateUser(user.id)}
+          className="bg-yellow-500 text-white px-4 py-2 ml-2 rounded hover:bg-yellow-700"
+        >
+          Deactivate
+        </button>
+        <button
+          onClick={() => setSelectedUser(user)}
+          className="bg-blue-500 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700"
+        >
+          Change Role
+        </button>
+      </td>
+    </tr>
+  );
 
   return (
     <>
@@ -89,100 +137,44 @@ const UserManagement: React.FC = () => {
       ) : error ? (
         <p>Error loading users</p>
       ) : (
-        <>
-          <TableContainer>
-            <Table>
-              <TableHeader>
-                <tr>
-                  <TableCell>Avatar</TableCell>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Role</TableCell>
-                  <TableCell>Actions</TableCell>
-                </tr>
-              </TableHeader>
-              <TableBody>
-                {paginatedData.map((user, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Avatar src={user.avatarUrl} alt="User image" />
-                    </TableCell>
-                    <TableCell>
-                      <Badge>{user.firstName}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge>{user.lastName}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span>{user.email}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span>{user.role}</span>
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => openModal(user.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => handleDeactivateUser(user.id)}
-                        className="bg-yellow-500 text-white px-4 py-2 ml-2 rounded hover:bg-yellow-700"
-                      >
-                        Deactivate
-                      </button>
-                      <button
-                        onClick={() => setSelectedUser(user)}
-                        className="bg-blue-500 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700"
-                      >
-                        Change Role
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <TableFooter>
-            <Pagination totalResults={usersData.length}
-                resultsPerPage={resultsPerPage}
-                label="Table navigation"
-                onChange={onPageChange}
-                />
-            </TableFooter>  
-          </TableContainer>
+        <TableComponent
+          headers={['Avatar', 'First Name', 'Last Name', 'Email', 'Role', 'Actions']}
+          data={paginatedData}
+          resultsPerPage={resultsPerPage}
+          totalResults={usersData.length}
+          onPageChange={onPageChange}
+          renderRow={renderRow}
+        />
+      )}
 
-          {/* Delete confirmation modal */}
-          <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <ModalHeader>Confirm Deletion</ModalHeader>
-            <ModalBody>Are you sure you want to delete this user?</ModalBody>
-            <ModalFooter>
-              <Button onClick={closeModal}>Cancel</Button>
-              <Button onClick={confirmDelete}>Confirm</Button>
-            </ModalFooter>
-          </Modal>
+      {/* Delete confirmation modal */}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <ModalHeader>Confirm Deletion</ModalHeader>
+        <ModalBody>Are you sure you want to delete this user?</ModalBody>
+        <ModalFooter>
+          <Button onClick={closeModal}>Cancel</Button>
+          <Button onClick={confirmDelete}>Confirm</Button>
+        </ModalFooter>
+      </Modal>
 
-          {/* Change role modal */}
-          {selectedUser && (
-            <Modal isOpen={Boolean(selectedUser)} onClose={() => setSelectedUser(null)}>
-              <ModalHeader>Change Role for {selectedUser.firstName}</ModalHeader>
-              <ModalBody>
-                <input
-                  type="text"
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                  placeholder="Enter new role"
-                  className="p-2 border border-gray-300 rounded"
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={() => setSelectedUser(null)}>Cancel</Button>
-                <Button onClick={handleChangeUserRole}>Change Role</Button>
-              </ModalFooter>
-            </Modal>
-          )}
-        </>
+      {/* Change role modal */}
+      {selectedUser && (
+        <Modal isOpen={Boolean(selectedUser)} onClose={() => setSelectedUser(null)}>
+          <ModalHeader>Change Role for {selectedUser.firstName}</ModalHeader>
+          <ModalBody>
+            <input
+              type="text"
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              placeholder="Enter new role"
+              className="p-2 border border-gray-300 rounded"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setSelectedUser(null)}>Cancel</Button>
+            <Button onClick={handleChangeUserRole}>Change Role</Button>
+          </ModalFooter>
+        </Modal>
       )}
     </>
   );

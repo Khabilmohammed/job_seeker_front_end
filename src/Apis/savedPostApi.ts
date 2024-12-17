@@ -1,17 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { createBaseQuery } from './baseApiConfig/baseApiConfig';
 
 const savedPostApi = createApi({
   reducerPath: 'savedPostApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5134/api', // Make sure this matches your backend URL
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`); // Attach the token if it exists
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     getUserSavedPosts: builder.query({
       query: (userId: string) => ({

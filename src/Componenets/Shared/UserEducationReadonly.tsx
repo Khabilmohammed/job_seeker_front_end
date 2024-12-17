@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { EducationModel } from '../../Interfaces/EducationModel';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '../Shared/ConfirmationModal';
 
 interface EducationProps {

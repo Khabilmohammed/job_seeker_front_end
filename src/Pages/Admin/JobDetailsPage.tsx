@@ -14,15 +14,10 @@ const JobDetailsPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
 
-  // Access job details from the `result` property
   const job = data?.result;
 
   if (isLoading) return <div>Loading...</div>;
   if (error || !job) return <div>Job not found or an error occurred</div>;
-
-
-
-  // Handle job deletion
   const handleDelete = async () => {
     try {
       await deleteJobPosting(job.jobId).unwrap();

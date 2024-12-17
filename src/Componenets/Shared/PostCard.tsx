@@ -12,8 +12,8 @@ import { useSavePostMutation, useRemoveSavedPostMutation } from '../../Apis/save
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
-
-interface PostCardProps {
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css';interface PostCardProps {
   post: PostModel;
   userId: string;
   userName: string;
@@ -27,6 +27,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [comment, setComment] = useState('');
+  const [commentCount, setCommentCount] = useState(post.commentCount || 0);
   const navigate = useNavigate();
   // Likes
   const { data: likesData } = useGetLikesForPostQuery(post.postId, { skip: !isModalOpen });
@@ -127,6 +128,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
                 ...prev,
                 { userName, content: comment, timestamp },
             ]);
+            setCommentCount((prev) => prev + 1);
             setComment(''); // Clear the input after submission
         } catch (error) {
             console.error("Failed to create comment:", error);
@@ -155,14 +157,25 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
         <IoIosMore className='w-5 h-5 text-gray-600 cursor-pointer' />
       </div>
 
-      {/* Post Image */}
-      <div className='w-full overflow-hidden'>
-        <img
-          src={post.images?.[0]?.imageUrl || "default-post-image.jpg"}
-          alt="Post"
-          className='w-full h-auto object-scale-down'
-        />
-      </div>
+      {/* Post Image with Swipe Functionality */}
+      <Swiper
+  spaceBetween={10}
+  slidesPerView={1}
+  loop
+  pagination={{ clickable: true }}
+  className="w-full h-auto"
+>
+  {post.images?.map((image, index) => (
+    <SwiperSlide key={index}>
+      <img
+        src={image.imageUrl || "default-post-image.jpg"}
+        alt={`Post Image ${index + 1}`}
+        className="w-full h-auto object-cover rounded-md"
+      />
+    </SwiperSlide>
+  ))}
+</Swiper>
+
 
       {/* Actions */}
       <div className="flex justify-between items-center px-2 py-1">
@@ -206,7 +219,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
           className='text-xs text-gray-500 cursor-pointer hover:underline'
           onClick={() => setIsCommentsModalOpen(true)}
         >
-          View all {post.commentCount} comments
+          View all {commentCount} comments
         </span>
 
         <p className='mt-1 text-xs text-gray-500 uppercase'>

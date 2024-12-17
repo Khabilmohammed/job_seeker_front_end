@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CardElement } from '@stripe/react-stripe-js';
 import { useInitialPaymentMutation } from '../../Apis/paymentApi';
 import { Rootstate } from '../../Storage/Redux/store';
 import { useSelector } from 'react-redux';
