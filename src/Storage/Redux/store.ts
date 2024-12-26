@@ -22,6 +22,8 @@ import jobApplicationApi from "../../Apis/jobApplicationApi";
 import followApi from "../../Apis/followApi";
 import messageApi from "../../Apis/messageApi";
 import { dashboardApi } from "../../Apis/dashboardApi ";
+import shareApi from "../../Apis/shareApi";
+import searchApi from "../../Apis/searchApi";
 
 const rootReducer = combineReducers({
   userAuthStore: userAuthReducer,
@@ -47,6 +49,8 @@ const rootReducer = combineReducers({
   [followApi.reducerPath]: followApi.reducer,
   [messageApi.reducerPath]: messageApi.reducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
+  [shareApi.reducerPath]: shareApi.reducer,
+  [searchApi.reducerPath]: searchApi.reducer,
   [jobApplicationApi.reducerPath]: jobApplicationApi.reducer,
 });
 
@@ -88,7 +92,9 @@ const store = configureStore({
       .concat(followApi.middleware)
       .concat(messageApi.middleware)
       .concat(dashboardApi.middleware)
+      .concat(shareApi.middleware)
       .concat(companyApi.middleware)
+      .concat(searchApi.middleware),
 });
 
 export const persistor = persistStore(store);

@@ -18,11 +18,10 @@ const Feed = () => {
   // Fetch posts using RTK Query with pagination
   const { data, error, isLoading, isFetching, refetch } = useGetAllPostsQuery({ page, limit: 8 });
 
-  // Append new posts to the list whenever `data` changes
   useEffect(() => {
     if (data?.result) {
       setPostsList((prevPosts) => [...prevPosts, ...data.result]);
-      if (data.result.length < 8) setHasMore(false); // If fewer than 8 posts are returned, no more posts to load
+      if (data.result.length < 8) setHasMore(false); 
     }
   }, [data]);
 
@@ -57,9 +56,9 @@ const Feed = () => {
         {/* Post creation component */}
         <PostCreateComponent
           onPostCreated={() => {
-            setPage(1); // Reset page to the first page
-            setPostsList([]); // Clear posts list to refetch fresh data
-            refetch(); // Trigger the API to refetch posts
+            setPage(1); 
+            setPostsList([]); 
+            refetch(); 
           }}
         />
 

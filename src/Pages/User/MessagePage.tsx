@@ -23,7 +23,7 @@ const MessagePage = () => {
   const token=localStorage.getItem('token') || ''
   const { data: chattedUsers = [], isLoading: isLoadingUsers, error: usersError } =
     useGetChattedUsersQuery({});
-
+  console.log("chattedUsers",chattedUsers);
   const { data: fetchedMessages, isLoading: isLoadingMessages } =
     useGetMessageThreadQuery(selectedUser?.userName || "", {
       skip: !selectedUser,

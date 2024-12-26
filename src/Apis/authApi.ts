@@ -74,6 +74,16 @@ const authApi = createApi({
         body: { email, token, newPassword },
       }),
     }),
+    refreshToken: builder.mutation({
+      query: (refreshToken) => ({
+        url: "auth/refresh-token",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: { refreshToken },
+      }),
+    }),
   }),
 });
 
@@ -85,6 +95,7 @@ export const {
   useResetPasswordMutation,   
   useLogoutUserMutation,
   useResendOtpRegistrationMutation,
+  useRefreshTokenMutation,
 } = authApi;
 
 export default authApi;

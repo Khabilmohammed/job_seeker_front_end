@@ -1,14 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import logo from "../../Assets/StaticPageImages/assets/logo.png";
 import { useGetUserByIdQuery } from "../../Apis/userManagementApi";
 import { useSelector } from "react-redux";
 import { Rootstate } from "../../Storage/Redux/store";
+import { useSearchJobPostsQuery } from "../../Apis/searchApi"; // Import the search API
 
 const Headerbar = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
   const { data: user, isLoading, isError } = useGetUserByIdQuery(userId);
+
+  // Debouncing Logic
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500); // Delay of 500ms
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+  // Search job posts API call
+  const { data: searchResults, isLoading: isSearchLoading, isError: isSearchError } = useSearchJobPostsQuery(debouncedQuery, {
+    skip: !debouncedQuery, 
+  });
 
   return (
     <header className="bg-[#1a1a1a] shadow-md py-3 px-6 flex justify-between items-center fixed top-0 left-0 w-full z-50">
@@ -19,7 +39,10 @@ const Headerbar = () => {
       </div>
 
       {/* Search Form */}
-      <form className="flex items-center flex-grow mx-4 max-w-[800px]">
+      <form
+        className="flex items-center flex-grow mx-4 max-w-[800px] relative"
+        onSubmit={(e) => e.preventDefault()}
+      >
         <div className="relative w-full">
           <label htmlFor="voice-search" className="sr-only">
             Search
@@ -44,16 +67,12 @@ const Headerbar = () => {
             type="text"
             id="voice-search"
             className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg pl-10 py-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search..."
+            placeholder="Search job posts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             required
           />
         </div>
-        <button
-          type="submit"
-          className="ml-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
-        >
-          Search
-        </button>
       </form>
 
       {/* Navigation Icons */}
@@ -88,6 +107,28 @@ const Headerbar = () => {
           </div>
         )}
       </div>
+
+      {/* Display Search Results */}
+      {debouncedQuery && (
+        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-96 bg-white shadow-lg rounded-lg max-h-60 overflow-y-auto z-50 mt-1">
+          {isSearchLoading ? (
+            <p className="text-gray-600 text-center py-2">Loading...</p>
+          ) : isSearchError ? (
+            <p className="text-back-100 text-center py-2">not found</p>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {console.log("searchResults",searchResults)}
+              {searchResults?.map((post: any) => (
+                <li key={post.id} className="py-2 px-4 hover:bg-gray-100">
+                  <a href={`/user/jobDetailPage/${post.jobId}`} className="text-gray-900">
+                    {post.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </header>
   );
 };

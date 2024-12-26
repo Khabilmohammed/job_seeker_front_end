@@ -10,14 +10,22 @@ const SavedPost: React.FC = () => {
 
   const savedPosts = saveddata?.result || [];
 
+  // Loading state
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading saved posts.</p>;
+
+  // Error state
+  if (error) return <p>Error loading saved posts. Please try again later.</p>;
+
+  // Display message if no posts are available
+  if (savedPosts.length === 0) {
+    return <p className="text-gray-500">No saved posts available.</p>;
+  }
 
   const handleRemovePost = async (postId: number) => {
     try {
-      await removeSavedPost(postId).unwrap(); // Call the mutation to remove the post
+      await removeSavedPost(postId).unwrap();
       console.log(`Post with ID: ${postId} removed successfully`);
-      refetch(); // Trigger refetch after post removal
+      refetch(); 
     } catch (err) {
       console.error("Failed to remove post:", err);
     }
@@ -80,7 +88,7 @@ const SavedPost: React.FC = () => {
               <button
                 className="text-xs text-red-500 font-medium hover:underline"
                 onClick={() => handleRemovePost(savedPost.postId)}
-                disabled={isRemoving} // Disable while removing
+                disabled={isRemoving}
               >
                 {isRemoving ? "Removing..." : "Remove"}
               </button>

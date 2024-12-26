@@ -3,6 +3,7 @@ import { useDeletePostMutation, useGetAllPostsQuery } from '../../Apis/postApi';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, TableRow, TableCell } from '@windmill/react-ui';
 import toastNotify from '../../Taghelper/toastNotify';
 import TableComponent from '../../Componenets/Shared/TableComponent';
+import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
 
 const PostManagement: React.FC = () => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllPostsQuery({});
@@ -13,7 +14,7 @@ const PostManagement: React.FC = () => {
 
   const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
 
-  // State for modals
+  // State for modals 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
 
@@ -53,41 +54,49 @@ const PostManagement: React.FC = () => {
       closeModal();
     }
   };
-
-  const renderRow = (post: any) => (
-    <TableRow key={post.postId}>
-      <TableCell>
-        <span>{post.postId}</span>
-      </TableCell>
-      <TableCell>
-        <span>{post.content}</span>
-      </TableCell>
-      <TableCell>
-        <img
-          src={post.images[0].imageUrl}
-          alt="Post"
-          className="w-20 h-20 rounded object-cover"
-        />
-      </TableCell>
-      <TableCell>
-        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-      </TableCell>
-      <TableCell>
-        <span>{post.likeCount}</span>
-      </TableCell>
-      <TableCell>
-        <span>{post.commentCount}</span>
-      </TableCell>
-      <TableCell>
-        <button
-          onClick={() => openModal(post.id)}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          {isDeleting ? 'Deleting...' : 'Delete'}
-        </button>
-      </TableCell>
-    </TableRow>
-  );
+  const renderRow = (post: any) => {
+    const truncatedContent = post.content.length > 50 ? post.content.slice(0, 50) + '...' : post.content;
+  
+    return (
+      <TableRow key={post.postId}>
+        <TableCell>
+          <span>{post.postId}</span>
+        </TableCell>
+        <TableCell>
+          <span>{truncatedContent}</span>
+        </TableCell>
+        <TableCell>
+          {/* Fallback if no image is present */}
+          {post.images && post.images[0]?.imageUrl ? (
+            <img
+              src={post.images[0].imageUrl}
+              alt="Post"
+              className="w-20 h-20 rounded object-cover"
+            />
+          ) : (
+            <span>No Image</span> // Placeholder if no image is available
+          )}
+        </TableCell>
+        <TableCell>
+          <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+        </TableCell>
+        <TableCell>
+          <span>{post.likeCount}</span>
+        </TableCell>
+        <TableCell>
+          <span>{post.commentCount}</span>
+        </TableCell>
+        <TableCell>
+          <button
+            onClick={() => openModal(post.postId)}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   return (
     <>
@@ -108,16 +117,13 @@ const PostManagement: React.FC = () => {
       )}
 
       {/* Delete confirmation modal */}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <ModalHeader>Confirm Deletion</ModalHeader>
-        <ModalBody>Are you sure you want to delete this post?</ModalBody>
-        <ModalFooter>
-          <Button onClick={closeModal}>Cancel</Button>
-          <Button onClick={confirmDelete} disabled={isDeleting}>
-            {isDeleting ? 'Deleting...' : 'Confirm'}
-          </Button>
-        </ModalFooter>
-      </Modal>
+      <ConfirmationModal
+        show={isModalOpen}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this post?"
+        onConfirm={confirmDelete}
+        onCancel={closeModal}
+      />
     </>
   );
 };

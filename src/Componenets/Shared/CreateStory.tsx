@@ -27,8 +27,8 @@ const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
         const result = await createStory(formData).unwrap();
         console.log('Story created:', result);
         toastNotify("The Stroy has been Created","success")
-        setImage(null); // Reset image after successful upload
-        refetch(); // Trigger refetch after creating the story
+        setImage(null);
+        refetch(); 
       } catch (error) {
         toastNotify("The Stroy has not Created!!","error")
         console.error("Failed to create story:", error);

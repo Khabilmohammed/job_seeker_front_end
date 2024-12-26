@@ -51,7 +51,7 @@ function Login() {
         console.log(response.data);
         const token = response.data.result.result.token;
         console.log("Token received:", token);
-        if (token) { // Check if token is defined
+        if (token) { 
           const { username, email, role }: userModel = jwtDecode<userModel>(token);
           
           const id = response.data.result.result.id;

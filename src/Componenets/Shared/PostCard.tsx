@@ -13,7 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';interface PostCardProps {
+import 'swiper/swiper-bundle.css';import { useSharePostMutation } from '../../Apis/shareApi';
+import ShareModal from './ShareModal';
+import toastNotify from '../../Taghelper/toastNotify';
+interface PostCardProps {
   post: PostModel;
   userId: string;
   userName: string;
@@ -43,6 +46,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
 
   const [comments, setComments] = useState<{ userName: string; content: string; timestamp: string; }[]>([]);
 
+  //share post
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false); // Share modal state
+  const [sharePost] = useSharePostMutation(); // Mutation for sharing posts
   useEffect(() => {
     if (commentsData?.result) {
         setComments(
@@ -136,6 +142,23 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
     }
 };
 
+const handleShareClick = async (selectedUsers: any[]) => {
+  const selectedUserIds = selectedUsers.map(user => user.userId);
+  console.log("Selected users' IDs to share with:", selectedUserIds);
+  
+  try {
+    await sharePost({
+      postId: post.postId,
+      SenderId: userId,
+      RecipientId: selectedUserIds[0], // Pass only the userIds
+    }).unwrap();
+    toastNotify("You have shared the post","success");
+    setIsShareModalOpen(false); // Close modal on success
+  } catch (error) {
+    console.error("Failed to share post:", error);
+  }
+};
+
 
   return (
     <div className='flex flex-col gap-2 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden max-w-lg mx-auto'>
@@ -191,7 +214,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
             className='w-5 h-5 text-gray-700 cursor-pointer hover:text-blue-500 transition-colors'
             onClick={() => setIsCommentsModalOpen(true)}
           />
-          <FiSend className='w-4 h-4 text-gray-700 cursor-pointer hover:text-green-500 transition-colors' />
+          <FiSend
+        className="w-4 h-4 text-gray-700 cursor-pointer hover:text-green-500 transition-colors"
+        onClick={() => setIsShareModalOpen(true)}
+      />
         </div>
         <div onClick={handleSavePost} className='cursor-pointer'>
           {isSaved ? (
@@ -256,6 +282,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
         comments={comments}
         loading={isCommentsLoading}
         error={!!commentsError}
+      />
+
+<ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        onShare={handleShareClick} // Pass handleShareClick as prop
       />
     </div>
   );

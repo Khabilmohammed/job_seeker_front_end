@@ -1,5 +1,5 @@
 import { useGetFollowersQuery } from "../../Apis/followApi";
-import { FaUserCircle } from "react-icons/fa"; // Import an icon for dummy profile photo
+import { FaUserCircle } from "react-icons/fa"; 
 
 const FollowersList = ({ userId }: { userId: string }) => {
   const { data: followers, error, isLoading } = useGetFollowersQuery(userId);

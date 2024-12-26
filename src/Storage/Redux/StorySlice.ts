@@ -18,7 +18,7 @@ const storySlice = createSlice({
   initialState,
   reducers: {
     fetchStoriesSuccess: (state, action: PayloadAction<StoryInterface[]>) => {
-      if (Array.isArray(action.payload)) { // Check if payload is an array
+      if (Array.isArray(action.payload)) { 
         state.stories = action.payload;
       }
       state.error = null;
@@ -26,9 +26,12 @@ const storySlice = createSlice({
     fetchStoriesFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
+    deleteStoryFromState(state, action: PayloadAction<number>) {
+      state.stories = state.stories.filter(story => story.storyId !== action.payload);
+    },
   },
 });
 
-export const { fetchStoriesSuccess, fetchStoriesFailure } = storySlice.actions;
+export const { fetchStoriesSuccess, fetchStoriesFailure,deleteStoryFromState } = storySlice.actions;
 
 export default storySlice.reducer;

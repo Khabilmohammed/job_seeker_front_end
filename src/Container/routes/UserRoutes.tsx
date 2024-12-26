@@ -92,6 +92,8 @@ const UserRoutes = () => (
       path="/messagePage"
       element={<ProtectedRoute element={<MessagePage />} allowedRoles={['user']} />}
     />
+
+
   </Routes>
 );
 

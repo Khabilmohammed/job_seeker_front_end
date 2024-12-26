@@ -46,7 +46,6 @@ const userManagementApi = createApi({
     }),
 });
 
-// Export hooks for usage in functional components
 export const {
     useGetUserByIdQuery,
     useGetAllUsersQuery,

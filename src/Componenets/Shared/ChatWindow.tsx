@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPaperPlane, FaTrash } from "react-icons/fa";
+import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { Message } from "../../Interfaces/MessageModel";
 import { messageHubService } from "../../Apis/signalrConnection/messageHubService";
 
@@ -28,20 +29,22 @@ const ChatWindow: React.FC<Props> = ({
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [showModal, setShowModal] = useState(false); // Track modal visibility
+  const [messageToDelete, setMessageToDelete] = useState<number | null>(null); // Track the message to delete
 
   useEffect(() => {
     if (selectedUser?.userName && currentUserToken) {
       const connect = async () => {
         const connection = messageHubService(selectedUser.userName);
-  
+
         connection.on("ReceiveMessageThread", (fetchedMessages: Message[]) => {
           setMessages(fetchedMessages);
         });
-  
+
         connection.on("ReceiveMessage", (newMessage: Message) => {
           setMessages((prev) => [...prev, newMessage]);
         });
-  
+
         try {
           await connection.start();
           setConnection(connection);
@@ -49,9 +52,9 @@ const ChatWindow: React.FC<Props> = ({
           console.error("SignalR Connection Error: ", err);
         }
       };
-  
+
       connect();
-  
+
       return () => {
         connection?.stop();
       };
@@ -60,55 +63,67 @@ const ChatWindow: React.FC<Props> = ({
 
   useEffect(() => {
     if (connection) {
-        connection.on("NewMessage", (message: Message) => {
-            setMessages((prev) => [...prev, message]);
-        });
+      connection.on("NewMessage", (message: Message) => {
+        setMessages((prev) => [...prev, message]);
+      });
     }
     return () => {
-        connection?.off("NewMessage");
+      connection?.off("NewMessage");
     };
-}, [connection]);
-useEffect(() => {
-  if (connection) {
-    connection.on("MessageDeleted", (messageId: number) => {
-      setMessages((prevMessages) =>
-        prevMessages.filter((message) => message.messageId !== messageId)
-      );
-    });
-  }
-  return () => {
-    connection?.off("MessageDeleted");
-  };
-}, [connection]);
+  }, [connection]);
 
-const handleDeleteMessage = async (messageId: number) => {
-  if (connection) {
-    const confirmDelete = window.confirm("Are you sure you want to delete this message?");
-    if (!confirmDelete) return;
-
-    try {
-      await connection.invoke("DeleteMessage", messageId);
-      console.log(`Message with ID ${messageId} deleted successfully.`);
-    } catch (err) {
-      console.error("DeleteMessage Error: ", err);
+  useEffect(() => {
+    if (connection) {
+      connection.on("MessageDeleted", (messageId: number) => {
+        setMessages((prevMessages) =>
+          prevMessages.filter((message) => message.messageId !== messageId)
+        );
+      });
     }
-  }
-};
+    return () => {
+      connection?.off("MessageDeleted");
+    };
+  }, [connection]);
+
+  const handleDeleteMessage = async (messageId: number) => {
+    if (connection) {
+      setShowModal(true); // Show the confirmation modal
+      setMessageToDelete(messageId); // Set the message to delete
+    }
+  };
+
+  const confirmDeleteMessage = async () => {
+    if (connection && messageToDelete !== null) {
+      try {
+        await connection.invoke("DeleteMessage", messageToDelete);
+        console.log(`Message with ID ${messageToDelete} deleted successfully.`);
+      } catch (err) {
+        console.error("DeleteMessage Error: ", err);
+      }
+    }
+    setShowModal(false); // Close the modal
+    setMessageToDelete(null); // Clear the message to delete
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false); // Close the modal
+    setMessageToDelete(null); // Clear the message to delete
+  };
 
   const handleSendMessage = async () => {
     if (newMessage.trim() && connection && selectedUser) {
-        const messageDTO = {
-            recipientUserName: selectedUser.userName,
-            content: newMessage,
-        };
-        try {
-            await connection.invoke("SendMessage", messageDTO);
-            setNewMessage("");
-        } catch (err) {
-            console.error("SendMessage Error: ", err);
-        }
+      const messageDTO = {
+        recipientUserName: selectedUser.userName,
+        content: newMessage,
+      };
+      try {
+        await connection.invoke("SendMessage", messageDTO);
+        setNewMessage("");
+      } catch (err) {
+        console.error("SendMessage Error: ", err);
+      }
     }
-};
+  };
 
   return (
     <div className="flex-1 bg-white flex flex-col">
@@ -181,6 +196,15 @@ const handleDeleteMessage = async (messageId: number) => {
           </div>
         </>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showModal}
+        message="Are you sure you want to delete this message?"
+        title="Delete Confirmation"
+        onConfirm={confirmDeleteMessage}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 };
