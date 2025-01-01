@@ -25,6 +25,7 @@ function AdminHome() {
   const { data: jobPostingsData = [], error: jobPostingsError, isLoading: jobPostingsLoading } = useGetAllJobPostingsAdminQuery({});
   
   const posts = postsData.result || [];
+  
   const stats = statsData || {};
   const jobPostings = jobPostingsData.result || [];
   
@@ -154,7 +155,8 @@ const onJobPageChange = (p: number) => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge>{post.content}</Badge>
+                      
+                      <Badge>{post.content.length > 50 ? `${post.content.slice(0, 50)}...` : post.content}</Badge>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm">{post.likes?.length || 0}</span>

@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { SEARCH_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const searchApi = createApi({
   reducerPath: "searchApi",
@@ -7,7 +8,7 @@ const searchApi = createApi({
   endpoints: (builder) => ({
     searchJobPosts: builder.query({
       query: (query) => ({
-        url: `Search/job-posts?query=${encodeURIComponent(query)}`,
+        url: SEARCH_API_ENDPOINTS.SEARCH_JOB_POSTS(query),
         method: "GET",
       }),
     }),

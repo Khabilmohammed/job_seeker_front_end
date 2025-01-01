@@ -13,7 +13,6 @@ import GetCompanyProfiePage from '../../Componenets/Shared/GetCompanyProfiePage'
 import JobApplicationPage from '../../Pages/User/JobApplicationPage';
 import AppliedJobsPage from '../../Pages/User/AppliedJobsPage';
 import SingleJobDetailsPage from '../../Pages/User/SingleJobDetailsPage';
-import NotificationPage from '../../Pages/User/NotificationPage';
 import MyNetwork from '../../Pages/User/MyNetwork';
 import MessagePage from '../../Pages/User/MessagePage';
 
@@ -46,11 +45,6 @@ const UserRoutes = () => (
 <Route
       path="/jobListingsPage"
       element={<ProtectedRoute element={<JobListingsPage />} allowedRoles={['user']} />}
-    />
-
-<Route
-      path="/notificationPage"
-      element={<ProtectedRoute element={<NotificationPage />} allowedRoles={['user']} />}
     />
 
 <Route

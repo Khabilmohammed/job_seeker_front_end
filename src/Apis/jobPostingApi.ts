@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { JOB_POSTING_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const jobPostingApi = createApi({
   reducerPath: "jobPostingApi",
@@ -7,21 +8,21 @@ const jobPostingApi = createApi({
   endpoints: (builder) => ({
     createJobPosting: builder.mutation({
       query: (jobData) => ({
-        url: `JobPosting/create`,
+        url:JOB_POSTING_API_ENDPOINTS.CREATE,
         method: "POST",
         body: jobData,
       }),
     }),
     getAllJobPostings: builder.query({
       query: () => ({
-        url: "JobPosting/all",
+        url:  JOB_POSTING_API_ENDPOINTS.GET_ALL,
         method: "GET",
       }),
     }),
 
     getAllJobPostingsAdmin: builder.query({
       query: () => ({
-        url: "JobPosting/all-job-admin",
+        url: JOB_POSTING_API_ENDPOINTS.GET_ALL_ADMIN,
         method: "GET",
       }),
     }),
@@ -29,7 +30,7 @@ const jobPostingApi = createApi({
     // Endpoint to get a job posting by its ID
     getJobPostingById: builder.query({
       query: (jobId) => ({
-        url: `JobPosting/${jobId}`,
+        url: JOB_POSTING_API_ENDPOINTS.GET_BY_ID(jobId),
         method: "GET",
       }),
     }),
@@ -37,7 +38,7 @@ const jobPostingApi = createApi({
     // Endpoint to get job postings by a company ID
     getCompanyJobPostings: builder.query({
       query: (companyId) => ({
-        url: `JobPosting/company/${companyId}`,
+        url:  JOB_POSTING_API_ENDPOINTS.GET_BY_COMPANY(companyId),
         method: "GET",
       }),
     }),
@@ -45,7 +46,7 @@ const jobPostingApi = createApi({
     // Endpoint to update a job posting
     updateJobPosting: builder.mutation({
       query: ({ jobId, ...updatedData }) => ({
-        url: `JobPosting/${jobId}/update`,
+        url: JOB_POSTING_API_ENDPOINTS.UPDATE(jobId),
         method: "PUT",
         body: updatedData,
       }),
@@ -54,7 +55,7 @@ const jobPostingApi = createApi({
     // Endpoint to delete a job posting
     deleteJobPosting: builder.mutation({
       query: (jobId) => ({
-        url: `JobPosting/${jobId}/delete`,
+        url:  JOB_POSTING_API_ENDPOINTS.DELETE(jobId),
         method: "DELETE",
       }),
     }),

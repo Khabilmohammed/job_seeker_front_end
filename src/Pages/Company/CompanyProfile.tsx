@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import { useGetCompanyByUserIdQuery } from '../../Apis/companyApi';
 import EditCompanyAboutModal from '../../Componenets/Comapany/EditCompanyAboutModal';
-import EditCompanyBannerModal from '../../Componenets/Comapany/EditCompanyBannerModal';
 import { BsPencilSquare } from 'react-icons/bs';
 
 const CompanyProfile: React.FC = () => {
@@ -32,13 +31,7 @@ const CompanyProfile: React.FC = () => {
           companyName={company.name || "N/A"}
           companyTagline={company.industry || "N/A"}
         />
-        <button
-          onClick={() => setShowEditBanner(true)}
-          className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full flex items-center shadow-lg hover:bg-blue-700"
-        >
-          <BsPencilSquare className="h-5 w-5 mr-1" />
-          Edit Banner
-        </button>
+        
       </div>
 
       {/* Company About Section */}
@@ -74,9 +67,7 @@ const CompanyProfile: React.FC = () => {
       {showEditAbout && (
         <EditCompanyAboutModal company={company} onClose={() => setShowEditAbout(false)} />
       )}
-      {showEditBanner && (
-        <EditCompanyBannerModal company={company} onClose={() => setShowEditBanner(false)} />
-      )}
+      
     </div>
   );
 };

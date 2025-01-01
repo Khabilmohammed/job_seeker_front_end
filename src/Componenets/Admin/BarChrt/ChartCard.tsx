@@ -63,7 +63,7 @@ const ChartCard = () => {
   };
 
   return (
-    <div className="p-4 bg-white shadow-md dark:bg-gray-800">
+    <div className="p-10 bg-white shadow-md dark:bg-gray-800">
       <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
         Activity Overview
       </h2>

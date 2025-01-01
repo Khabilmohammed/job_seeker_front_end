@@ -34,11 +34,10 @@ function SidebarCompany() {
   const menus = [
     { name: "Home", link: "companyHome", icon: FaHome },
     { name: "Story Management", link: "storyManagementpage", icon: BsPostcardHeartFill },
-    { name: "Notification", link: "notificationPage", icon: BsPostcardHeartFill },
     { name: "Message", link: "messagePage", icon: MdOutlineConstruction, margin: true },
     { name: "Jobs", link: "jobPage", icon: MdOutlineConstruction },
     { name: "My Network", link: "myNetwork", icon: IoIosPeople },
-    { name: "Saved", link: "", icon: AiOutlineHeart, margin: true },
+    { name: "Saved", link: "savedPage", icon: AiOutlineHeart, margin: true },
     { name: "Profile", link: "companyProfile", icon: IoIosPeople },
     { name: "Logout", link: "#", icon: IoIosLogOut, onClick: handleLogout },
   ];

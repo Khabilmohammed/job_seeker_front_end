@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { CERTIFICATE_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const certificateApi = createApi({
   reducerPath: "certificateApi",
@@ -7,19 +8,19 @@ const certificateApi = createApi({
   endpoints: (builder) => ({
     getCertificateById: builder.query({
       query: (id) => ({
-        url: `/Certificate/${id}`,
+        url: `${CERTIFICATE_API_ENDPOINTS.GET_BY_ID}/${id}`,
         method: "GET",
       }),
     }),
     getCertificatesByUser: builder.query({
       query: (userId) => ({
-        url: `/Certificate/user/${userId}`,
+        url: `${CERTIFICATE_API_ENDPOINTS.GET_BY_USER}/${userId}`,
         method: "GET",
       }),
     }),
     createCertificate: builder.mutation({
       query: ({ formData, userId }) => ({
-        url: `/Certificate`,
+        url: CERTIFICATE_API_ENDPOINTS.CREATE,
         method: "POST",
         body: formData,
         params: { userId },
@@ -27,7 +28,7 @@ const certificateApi = createApi({
     }),
     deleteCertificate: builder.mutation({
       query: ({ id, userId }) => ({
-        url: `/Certificate/${id}`,
+        url:  `${CERTIFICATE_API_ENDPOINTS.DELETE}/${id}`,
         method: "DELETE",
         headers: { userId },
       }),

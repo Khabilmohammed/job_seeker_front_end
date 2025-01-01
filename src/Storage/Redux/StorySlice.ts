@@ -1,4 +1,3 @@
-// store/StorySlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Story as StoryInterface } from '../../Interfaces/Story'; 
 

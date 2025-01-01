@@ -1,19 +1,20 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { EDUCATION_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const educationApi = createApi({
   reducerPath: "educationApi",
   baseQuery: createBaseQuery(),
   endpoints: (builder) => ({
     getEducationById: builder.query({
-      query: (id) => `Education/${id}`, 
+      query: (id) => EDUCATION_API_ENDPOINTS.GET_BY_ID(id), 
     }),
     getEducationsByUser: builder.query({
-      query: (userId) => `Education/user/${userId}`,
+      query: (userId) => EDUCATION_API_ENDPOINTS.GET_BY_USER(userId),
     }),
     createEducation: builder.mutation({
       query: ({ formData, userId }) => ({
-        url: "Education/create",
+        url:  EDUCATION_API_ENDPOINTS.CREATE,
         method: "POST",
         body: formData,
         headers: { UserId: userId },
@@ -21,14 +22,14 @@ const educationApi = createApi({
     }),
     updateEducation: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `Education/${id}`,
+        url: EDUCATION_API_ENDPOINTS.UPDATE(id),
         method: "PUT",
         body: formData,
       }),
     }),
     deleteEducation: builder.mutation({
       query: (id) => ({
-        url: `Education/${id}`,
+        url:  EDUCATION_API_ENDPOINTS.DELETE(id),
         method: "DELETE",
       }),
     }),

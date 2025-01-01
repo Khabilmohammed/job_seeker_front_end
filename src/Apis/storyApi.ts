@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { STORY_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 export const storyApi = createApi({
   reducerPath: "storyApi", 
@@ -7,25 +8,25 @@ export const storyApi = createApi({
   endpoints: (builder) => ({
    
     getStoriesByUserId: builder.query({
-      query: (userId) => `stories/user/${userId}`,
+      query: (userId: string) => STORY_API_ENDPOINTS.GET_STORIES_BY_USER_ID(userId),
     }),
     getArchivedStories: builder.query({
-      query: (userId) => `stories/archived?userId=${userId}`,  
+      query: (userId: string) => STORY_API_ENDPOINTS.GET_ARCHIVED_STORIES(userId),  
     }),
     getStoriesFromOthers: builder.query({
-      query: (userId) => `stories/otherstories/${userId}`, 
+      query: (userId: string) => STORY_API_ENDPOINTS.GET_STORIES_FROM_OTHERS(userId),
     }),
 
     createStory: builder.mutation({
       query: (storyData) => ({
-        url: "stories/create",  
+        url:  STORY_API_ENDPOINTS.CREATE_STORY, 
         method: "POST",  
         body: storyData, 
       }),
     }),
     deleteStory: builder.mutation({
       query: (storyId) => ({
-        url: `stories/${storyId}`, 
+        url: STORY_API_ENDPOINTS.DELETE_STORY(storyId), 
         method: "DELETE", 
       }),
     }),

@@ -1,18 +1,19 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { createBaseQuery } from './baseApiConfig/baseApiConfig';
+import { DASHBOARD_API_ENDPOINTS } from './baseApiConfig/apiEndpoints';
 
 export const dashboardApi = createApi({
   reducerPath: 'dashboardApi',
   baseQuery: createBaseQuery(), 
   endpoints: (builder) => ({
     getDashboardStats: builder.query({
-      query: () => 'Dashboard/stats',
+      query: () => DASHBOARD_API_ENDPOINTS.STATS,
     }),
     getMonthlyStats: builder.query({
-      query: () => 'Dashboard/monthly-stats',
+      query: () => DASHBOARD_API_ENDPOINTS.MONTHLY_STATS,
     }),
     getEngagementMetrics: builder.query({
-      query: () => 'Dashboard/engagement-metrics',
+      query: () => DASHBOARD_API_ENDPOINTS.ENGAGEMENT_METRICS,
     }),
   }),
 });

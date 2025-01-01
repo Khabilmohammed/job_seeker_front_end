@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { POST_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const postApi = createApi({
   reducerPath: "postApi",
@@ -7,32 +8,32 @@ const postApi = createApi({
   endpoints: (builder) => ({
     createPost: builder.mutation({
       query: (formData:FormData) => ({
-        url: "post/CreatePost",
+        url: POST_API_ENDPOINTS.CREATE_POST,
         method: "POST",
         body: formData, 
       }),
     }),
     getAllPosts: builder.query({
       query: () => ({
-        url: "post/GetAllPosts",
+        url: POST_API_ENDPOINTS.GET_ALL_POSTS,
         method: "GET",
       }),
     }),
     getPostById: builder.query({
       query: (postId) => ({
-        url: `post/GetPost/${postId}`,
+        url:  POST_API_ENDPOINTS.GET_POST_BY_ID(postId),
         method: "GET",
       }),
     }),
     getPostByuserId: builder.query({
       query: (userId) => ({
-        url: `post/GetPostsByUser/${userId}`,
+        url: POST_API_ENDPOINTS.GET_POSTS_BY_USER(userId),
         method: "GET",
       }),
     }),
     updatePost: builder.mutation({
       query: ({ postId, updatedPost }) => ({
-        url: `post/UpdatePost/${postId}`,
+        url: POST_API_ENDPOINTS.UPDATE_POST(postId),
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +43,7 @@ const postApi = createApi({
     }),
     deletePost: builder.mutation({
       query: (postId) => ({
-        url: `post/DeletePost/${postId}`,
+        url: POST_API_ENDPOINTS.DELETE_POST(postId),
         method: "DELETE",
       }),
     }),

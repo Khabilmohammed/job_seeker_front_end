@@ -33,7 +33,6 @@ function SideBar() {
 
   const menus = [
     { name: "Home", link: "home", icon: FaHome },
-    { name: "Notification", link: "notificationPage", icon: IoMdNotifications },
     { name: "Messages", link: "messagePage", icon: FaMessage },
     { name: "stories", link: "storyManagementpage", icon: FaMessage },
     { name: "Jobs", link: "jobListingsPage", icon: MdOutlineConstruction, margin: true },

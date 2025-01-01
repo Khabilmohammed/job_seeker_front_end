@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "./baseApiConfig/baseApiConfig";
+import { AUTH_API_ENDPOINTS } from "./baseApiConfig/apiEndpoints";
 
 const authApi = createApi({
   reducerPath: "authApi",
@@ -7,7 +8,7 @@ const authApi = createApi({
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (userData) => ({
-        url: "auth/register",
+        url: AUTH_API_ENDPOINTS.REGISTER,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -17,7 +18,7 @@ const authApi = createApi({
     }),
     loginUser: builder.mutation({
       query: (userCredentials) => ({
-        url: "auth/login",
+        url: AUTH_API_ENDPOINTS.LOGIN,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,7 +28,7 @@ const authApi = createApi({
     }),
     verifyOtp: builder.mutation({
       query: ({ email, otp }) => ({
-        url: "auth/validate-otp",
+        url: AUTH_API_ENDPOINTS.VALIDATE_OTP,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +38,7 @@ const authApi = createApi({
     }),
     logoutUser: builder.mutation({
       query: () => ({
-        url: "auth/logout",
+        url:  AUTH_API_ENDPOINTS.LOGOUT,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +47,7 @@ const authApi = createApi({
     }),
     forgetPassword: builder.mutation({
       query: (email) => ({
-        url: "auth/forgot-password",
+        url: AUTH_API_ENDPOINTS.FORGOT_PASSWORD,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ const authApi = createApi({
     }),
     resendOtpRegistration: builder.mutation({
       query: (email) => ({
-        url: "auth/registration-resend-otp",
+        url:  AUTH_API_ENDPOINTS.RESEND_OTP,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +67,7 @@ const authApi = createApi({
     }),
     resetPassword: builder.mutation({
       query: ({ email, token, newPassword }) => ({
-        url: "auth/reset-password",
+        url: AUTH_API_ENDPOINTS.RESET_PASSWORD,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +77,7 @@ const authApi = createApi({
     }),
     refreshToken: builder.mutation({
       query: (refreshToken) => ({
-        url: "auth/refresh-token",
+        url:AUTH_API_ENDPOINTS.REFRESH_TOKEN,
         method: "POST",
         headers: {
           "Content-Type": "application/json",

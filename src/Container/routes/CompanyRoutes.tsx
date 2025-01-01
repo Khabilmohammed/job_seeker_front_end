@@ -16,8 +16,8 @@ import GetUserProfilePage from '../../Componenets/Shared/GetUserProfilePage';
 import ApplicantsPage from '../../Pages/Company/ApplicantsPage';
 import SingleJobDetailsPage from '../../Pages/Company/SingleJobDetailsPage';
 import MyNetwork from '../../Pages/Company/MyNetwork';
-import NotificationPage from '../../Pages/Company/NotificationPage';
 import MessagePage from '../../Pages/Company/MessagePage';
+import SavedPage from '../../Pages/Company/SavedPost';
 
 const CompanyRoutes = () => (
   <Routes>
@@ -87,15 +87,16 @@ const CompanyRoutes = () => (
     />
 
 <Route
-      path="notificationPage"
-      element={<ProtectedRoute element={<NotificationPage />} allowedRoles={['company']} />}
-    />
-
-    
-<Route
       path="/messagePage"
       element={<ProtectedRoute element={<MessagePage />} allowedRoles={['company']} />}
     />
+
+<Route
+      path="/savedPage"
+      element={<ProtectedRoute element={<SavedPage />} allowedRoles={['company']} />}
+    />
+
+    
     {/* Add more company routes here as needed */}
   </Routes>
 );

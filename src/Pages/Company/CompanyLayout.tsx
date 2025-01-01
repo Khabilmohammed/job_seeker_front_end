@@ -23,7 +23,7 @@ function CompanyLayout() {
 
         {/* Fixed Messages Section on larger screens */}
         <div className="hidden lg:block lg:w-80"> {/* Only show on larger screens */}
-          <div className="fixed right-0 top-16 h-full w-80 bg-white shadow-lg border-l border-gray-200">
+          <div className="fixed right-0 top-16 h-full w-80 bg-[#745858] shadow-lg border-l border-gray-200">
             <PeopleYouMayKnow/>
           </div>
         </div>
