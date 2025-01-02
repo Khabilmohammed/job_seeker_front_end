@@ -1,4 +1,4 @@
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUserCircle } from "react-icons/fa";
 
 interface User {
   userName: string;
@@ -38,11 +38,15 @@ const ChattedUsersSidebar: React.FC<Props> = ({ users, isLoading, error, onSelec
                 onClick={() => onSelectUser(user)}
                 className="flex items-center p-4 cursor-pointer hover:bg-gray-200 rounded-lg"
               >
-                <img
-                  src={user.profilePicture}
-                  alt={user.userName}
-                  className="w-12 h-12 rounded-full mr-4"
-                />
+               {user.profilePicture ? (
+          <img
+            src={user.profilePicture}
+            alt={user.userName}
+            className="w-12 h-12 rounded-full mr-4"
+          />
+        ) : (
+          <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
+        )}
                 <div>
                   <div className="font-semibold text-lg">{user.userName}</div>
                   <div className="text-sm text-gray-600">

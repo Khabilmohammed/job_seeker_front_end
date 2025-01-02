@@ -18,6 +18,7 @@ interface JobApplicationFormData {
 
 const JobApplicationPage: React.FC = () => {
     const { jobId } = useParams<{ jobId: string }>();
+    const firstName = useSelector((state: Rootstate) => state.userAuthStore.firstName); // Assuming full name is in userAuthStore
     const navigate = useNavigate();
     const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
     const [applyForJob] = useApplyForJobMutation();
@@ -29,6 +30,7 @@ const JobApplicationPage: React.FC = () => {
         defaultValues: {
           jobPostingId: jobId,
           UserId:userId,
+          fullName: firstName || "",
         },
       });
       const onSubmit = async (data: JobApplicationFormData) => {

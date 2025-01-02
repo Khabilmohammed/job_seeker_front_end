@@ -131,17 +131,34 @@ const JobDetailsPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div>
           <h3 className="text-lg font-semibold mb-4">Job Overview</h3>
-          <ul className="space-y-3 text-gray-600">
-            <li><span className="font-medium">Experience Required:</span> {job.experienceRequired}</li>
-            <li><span className="font-medium">Salary Range:</span> {job.salaryRange}</li>
-            <li><span className="font-medium">Job Type:</span> {job.jobType}</li>
-            <li><span className="font-medium">Skills:</span> {job.skills}</li>
-            <li><span className="font-medium">Status:</span> {job.isActive ? "Active" : "Closed"}</li>
+          <ul className="space-y-4 text-gray-600">
+            <li className="flex items-center">
+              <i className="fas fa-briefcase text-blue-500 mr-2"></i>
+              <span className="font-medium">Experience Required:</span> {job.experienceRequired}
+            </li>
+            <li className="flex items-center">
+              <i className="fas fa-dollar-sign text-blue-500 mr-2"></i>
+              <span className="font-medium">Salary Range:</span> {job.salaryRange}
+            </li>
+            <li className="flex items-center">
+              <i className="fas fa-clock text-blue-500 mr-2"></i>
+              <span className="font-medium">Job Type:</span> {job.jobType}
+            </li>
+            <li className="flex items-center">
+              <i className="fas fa-cogs text-blue-500 mr-2"></i>
+              <span className="font-medium">Skills:</span> {job.skills}
+            </li>
+            <li className="flex items-center">
+              <i className="fas fa-check-circle text-green-500 mr-2"></i>
+              <span className="font-medium">Status:</span> {job.isActive ? "Active" : "Closed"}
+            </li>
           </ul>
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-4">Job Description</h3>
-          <p className="text-gray-700 leading-relaxed">{job.description}</p>
+          <div className="border border-gray-300 p-6 rounded-lg shadow-lg">
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line">{job.description}</p>
+          </div>
         </div>
       </div>
 

@@ -1,22 +1,18 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGetJobPostingByIdQuery } from '../../Apis/jobPostingApi';
-import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave, FaCalendarAlt, FaBuilding, FaFileAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave, FaCalendarAlt, FaBuilding, FaFileAlt, FaCheckCircle } from 'react-icons/fa';
 
 const JobDetailPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
-  
   const navigate = useNavigate();
 
-  // Fetch job detail using jobId
   const { data, isLoading, error } = useGetJobPostingByIdQuery(jobId);
 
-  // Handle Apply button click
   const handleApply = () => {
     navigate(`/user/jobApplicationPage/${jobId}`);
   };
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -25,7 +21,6 @@ const JobDetailPage: React.FC = () => {
     );
   }
 
-  // Error handling
   if (error) {
     if ('message' in error) {
       return <div className="text-red-500 text-center">Error fetching job details: {error.message}</div>;
@@ -33,7 +28,6 @@ const JobDetailPage: React.FC = () => {
     return <div className="text-red-500 text-center">Error fetching job details.</div>;
   }
 
-  // Job detail rendering
   const job = data?.result;
 
   return (
@@ -41,7 +35,7 @@ const JobDetailPage: React.FC = () => {
       {/* Job Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-6 bg-white p-6 rounded-lg shadow-lg mb-8">
         <img
-          src={job?.companyLogo || '/company-logo.png'}
+          src={job?.logoUrl || '/company-logo.png'}
           alt="Company Logo"
           className="w-32 h-32 rounded-md object-cover border"
         />
@@ -78,24 +72,50 @@ const JobDetailPage: React.FC = () => {
       </div>
 
       {/* Job Description */}
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Job Description</h2>
-        <p className="text-gray-700 mb-6">{job?.description}</p>
+      <div className="bg-white p-8 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Job Description</h2>
+        <div className="text-gray-700 space-y-4">
+          <p className="leading-relaxed">{job?.description}</p>
+        </div>
 
-        {/* Additional Details */}
-        <div className="space-y-4">
-          <div className="flex items-start gap-4">
-            <FaFileAlt className="text-blue-600 mt-1" />
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800">Skills Required</h3>
-              <p className="text-gray-600">{job?.skills || 'Not specified'}</p>
+        {/* Additional Details Section */}
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          {/* Skills Required */}
+          <div className="bg-gray-50 p-6 rounded-lg shadow">
+            <div className="flex items-start gap-3">
+              <FaFileAlt className="text-blue-600 mt-1" />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Skills Required</h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  {job?.skills
+                    ? job.skills.split(',').map((skill: string, index: number) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <FaCheckCircle className="text-green-500" />
+                          {skill.trim()}
+                        </li>
+                      ))
+                    : 'Not specified'}
+                </ul>
+              </div>
             </div>
           </div>
-          <div className="flex items-start gap-4">
-            <FaCalendarAlt className="text-blue-600 mt-1" />
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800">Posted Date</h3>
-              <p className="text-gray-600">{job?.postedDate || 'N/A'}</p>
+
+          {/* Posted Date */}
+          <div className="bg-gray-50 p-6 rounded-lg shadow">
+            <div className="flex items-start gap-3">
+              <FaCalendarAlt className="text-blue-600 mt-1" />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Posted Date</h3>
+                <p className="text-gray-600">
+  {job?.postedDate
+    ? new Date(job.postedDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : 'N/A'}
+</p>
+              </div>
             </div>
           </div>
         </div>

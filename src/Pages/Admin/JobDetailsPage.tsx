@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGetJobPostingByIdQuery, useDeleteJobPostingMutation } from '../../Apis/jobPostingApi';
 import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
+import { FaUserCircle } from 'react-icons/fa';
 
 const JobDetailsPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
@@ -38,13 +39,17 @@ const JobDetailsPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white shadow-lg rounded-lg">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
-        <div className="flex items-center space-x-4">
-          <img
-            src={job.companyLogo || '/company-logo.png'}
-            alt="Company Logo"
-            className="w-20 h-20 rounded-full object-cover border"
-          />
-          <div>
+      <div className="flex items-center space-x-4">
+  {job.logoUrl ? (
+    <img
+      src={job.logoUrl}
+      alt="Company Logo"
+      className="w-20 h-20 rounded-full object-cover border"
+    />
+  ) : (
+    <FaUserCircle className="w-20 h-20 text-gray-500" />
+  )}
+  <div>
             <h2 className="text-3xl font-bold">{job.title}</h2>
             <p className="text-gray-500 text-lg">{job.location}</p>
             <p className="text-sm text-gray-400">

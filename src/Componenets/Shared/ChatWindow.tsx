@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaPaperPlane, FaTrash } from "react-icons/fa";
+import { FaPaperPlane, FaTrash, FaUserCircle } from "react-icons/fa";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { Message } from "../../Interfaces/MessageModel";
 import { messageHubService } from "../../Apis/signalrConnection/messageHubService";
@@ -131,11 +131,15 @@ const ChatWindow: React.FC<Props> = ({
         <>
           <div className="flex items-center justify-between p-4 border-b bg-white shadow-sm">
             <div className="flex items-center">
-              <img
-                src={selectedUser.profilePicture}
-                alt={selectedUser.userName}
-                className="w-12 h-12 rounded-full mr-4"
-              />
+            {selectedUser.profilePicture ? (
+      <img
+        src={selectedUser.profilePicture}
+        alt={selectedUser.userName}
+        className="w-12 h-12 rounded-full mr-4"
+      />
+    ) : (
+      <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
+    )}
               <div>
                 <div className="font-semibold text-lg">{selectedUser.userName}</div>
                 <div className="text-sm text-gray-500">Online</div>

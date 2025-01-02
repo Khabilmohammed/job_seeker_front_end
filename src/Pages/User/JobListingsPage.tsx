@@ -69,7 +69,7 @@ const JobListingsPage: React.FC = () => {
             >
               <div className="flex flex-col md:flex-row items-start">
                 <img
-                  src={job.companyLogo || '/company-logo.png'}
+                  src={job.logoUrl || '/company-logo.png'}
                   alt="Company Logo"
                   className="w-20 h-20 rounded-full object-cover border mb-4 md:mb-0 md:mr-4"
                 />
