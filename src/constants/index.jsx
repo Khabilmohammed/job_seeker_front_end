@@ -160,6 +160,7 @@ export const resourcesLinks = [
   { href: "#", text: "API Reference" },
   { href: "#", text: "Community Forums" },
   { href: "registration?role=company", text: "Company Registration" },
+  { href: "registration?role=admin", text: "Admin Registration" },
 
 ];
 

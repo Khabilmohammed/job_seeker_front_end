@@ -44,6 +44,7 @@ const JobApplicationPage: React.FC = () => {
           formData.append("ResumeFile", data.resume[0]); // Correct key
           formData.append("coverLetter", data.coverLetter);
           const response = await applyForJob(formData).unwrap();
+          console.log(response);  
           toastNotify("successfully applied for the job.","success");
           navigate("/user/jobListingsPage");
         } catch (error) {

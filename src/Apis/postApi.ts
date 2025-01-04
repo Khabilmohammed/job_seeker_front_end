@@ -13,7 +13,7 @@ const postApi = createApi({
         body: formData, 
       }),
     }),
-    getAllPosts: builder.query({
+    getAllPosts: builder.query({ 
       query: () => ({
         url: POST_API_ENDPOINTS.GET_ALL_POSTS,
         method: "GET",

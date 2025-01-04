@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, TableRow, TableCell
 import toastNotify from '../../Taghelper/toastNotify';
 import TableComponent from '../../Componenets/Shared/TableComponent';
 import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
+import PreviewPostCard from '../../Componenets/Shared/PreviewPostCard';
 
 const PostManagement: React.FC = () => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllPostsQuery({});
@@ -17,6 +18,11 @@ const PostManagement: React.FC = () => {
   // State for modals 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
+
+
+    // State for post preview modal
+    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+    const [selectedPost, setSelectedPost] = useState<any | null>(null);
 
   useEffect(() => {
     if (Array.isArray(postsData)) {
@@ -38,6 +44,18 @@ const PostManagement: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setPostToDelete(null);
+  };
+
+
+   // Open post preview modal
+   const openPreviewModal = (post: any) => {
+    setSelectedPost(post);
+    setIsPreviewModalOpen(true);
+  };
+
+  const closePreviewModal = () => {
+    setIsPreviewModalOpen(false);
+    setSelectedPost(null);
   };
 
   const confirmDelete = async () => {
@@ -86,14 +104,23 @@ const PostManagement: React.FC = () => {
         <TableCell>
           <span>{post.commentCount}</span>
         </TableCell>
-        <TableCell>
-          <button
-            onClick={() => openModal(post.postId)}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
-        </TableCell>
+         <TableCell className="flex gap-2">
+        {/* Preview Button */}
+        <button
+          onClick={() => openPreviewModal(post)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Preview
+        </button>
+
+        {/* Delete Button */}
+        <button
+          onClick={() => openModal(post.postId)}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          {isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
+      </TableCell>
       </TableRow>
     );
   };
@@ -124,6 +151,11 @@ const PostManagement: React.FC = () => {
         onConfirm={confirmDelete}
         onCancel={closeModal}
       />
+      {/* Post preview modal */}
+      {selectedPost && (
+        <PreviewPostCard post={selectedPost} onClose={closePreviewModal} />
+      )}
+      
     </>
   );
 };

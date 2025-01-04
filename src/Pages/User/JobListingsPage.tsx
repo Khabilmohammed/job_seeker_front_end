@@ -8,8 +8,6 @@ const JobListingsPage: React.FC = () => {
   const [page, setPage] = useState(1); 
   const [jobList, setJobList] = useState<any[]>([]); 
   const [hasMore, setHasMore] = useState(true); 
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  console.log("jobList",jobList)
   const { data, isLoading, error, isFetching } = useGetAllJobPostingsQuery({ page, limit: 8 });
 
   useEffect(() => {
