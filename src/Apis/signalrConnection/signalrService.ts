@@ -8,7 +8,7 @@ class SignalrService {
 
   private initializeConnection() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5134/hubs/presence', { 
+      .withUrl('https://connectxapi.azurewebsites.net/api/hubs/presence', { 
         accessTokenFactory: () => localStorage.getItem('token') || ''
       })
       .withAutomaticReconnect()
