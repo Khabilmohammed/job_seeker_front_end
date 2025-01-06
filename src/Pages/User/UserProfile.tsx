@@ -14,6 +14,7 @@ import { useCreateCertificateMutation } from '../../Apis/certificateApi';
 import { useGetEducationsByUserQuery } from '../../Apis/educationApi';
 import { EducationModel } from '../../Interfaces/EducationModel';
 import { useGetUserByIdQuery } from '../../Apis/userManagementApi';
+import toastNotify from '../../Taghelper/toastNotify';
 
 function UserProfile() {
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
@@ -113,10 +114,10 @@ function UserProfile() {
         ...prev,
         certificates: [...prev.certificates, newCertificate],
       }));
-      alert('Certificate created successfully!');
+      toastNotify('Certificate created successfully.',"success");  
     } catch (error) {
       console.error('Failed to create certificate:', error);
-      alert('Failed to create certificate.');
+      toastNotify('Certificate Not created succesffully.',"error");  
     }
   };
 

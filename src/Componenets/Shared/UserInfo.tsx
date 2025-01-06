@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useUpdateUserMutation } from "../../Apis/userManagementApi";
 import { useSelector } from "react-redux";
 import { Rootstate } from "../../Storage/Redux/store";
+import toastNotify from "../../Taghelper/toastNotify";
 
 interface UserInfoProps {
   username: string;
@@ -82,11 +83,11 @@ const UserInfo: React.FC<UserInfoProps> = ({
   
     try {
       await updateUser(formPayload).unwrap();
-      alert("Profile updated successfully!");
+      toastNotify("Profile updated successfully!","success");
       setIsEditing(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to update profile.");
+      toastNotify("Failed to update profile.","error");
     }
   };
 
