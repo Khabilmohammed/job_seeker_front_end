@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDeleteUserMutation, useGetAllUsersQuery, useDeactivateUserMutation, useChangeUserRoleMutation } from '../../Apis/userManagementApi';
+import { useDeleteUserMutation, useGetAllUsersQuery, useDeactivateUserMutation, useChangeUserRoleMutation, useReactivateUserMutation } from '../../Apis/userManagementApi';
 import toastNotify from '../../Taghelper/toastNotify';
 import { FaUserAlt } from 'react-icons/fa';
 import { Badge, Avatar, Button, Modal, ModalBody, ModalFooter, ModalHeader } from '@windmill/react-ui';
@@ -15,6 +15,7 @@ const UserManagement: React.FC = () => {
   const [deleteUser] = useDeleteUserMutation();
   const [deactivateUser] = useDeactivateUserMutation();
   const [changeUserRole] = useChangeUserRoleMutation();
+  const [reactivateUser] = useReactivateUserMutation();
 
   // State for modals
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +69,23 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleToggleUserStatus = async (user: any) => {
+  try {
+    if (user.lockoutEnd && new Date(user.lockoutEnd) > new Date()) {
+      // User is deactivated -> Reactivate
+      await reactivateUser(user.id).unwrap();
+      toastNotify("User has been reactivated", 'success');
+    } else {
+      // User is active -> Deactivate
+      await deactivateUser(user.id).unwrap();
+      toastNotify("User has been deactivated", 'success');
+    }
+    refetch();
+  } catch (error) {
+    toastNotify("Failed to change user status", 'error');
+  }
+};
+
   // Change user role
   const handleChangeUserRole = async () => {
     if (!selectedUser || !newRole) return;
@@ -114,11 +132,17 @@ const UserManagement: React.FC = () => {
           Delete
         </button>
         <button
-          onClick={() => handleDeactivateUser(user.id)}
-          className="bg-yellow-500 text-white px-4 py-2 ml-2 rounded hover:bg-yellow-700"
-        >
-          Deactivate
-        </button>
+  onClick={() => handleToggleUserStatus(user)}
+  className={`${
+    user.lockoutEnd && new Date(user.lockoutEnd) > new Date()
+      ? "bg-green-500 hover:bg-green-700"
+      : "bg-yellow-500 hover:bg-yellow-700"
+  } text-white px-4 py-2 ml-2 rounded`}
+>
+  {user.lockoutEnd && new Date(user.lockoutEnd) > new Date()
+    ? "Reactivate"
+    : "Deactivate"}
+</button>
         <button
           onClick={() => setSelectedUser(user)}
           className="bg-blue-500 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700"

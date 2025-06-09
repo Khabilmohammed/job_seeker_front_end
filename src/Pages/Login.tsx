@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import CoverImage from '../Assets/Images/Leonardo_Phoenix_A_sleek_modern_laptop_sits_centered_on_a_mini_3.jpg';
+import CoverImage from '../Assets/Images/Leonardo_Phoenix_A_sleek_modern_laptop_sits_centered_on_a_mini_1 (1).jpg';
 import GoogleImage from '../Assets/Images/google.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import inputHelper from '../Taghelper/inputHelper';

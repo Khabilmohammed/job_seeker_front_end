@@ -17,6 +17,7 @@ export const AUTH_API_ENDPOINTS = {
     RESEND_OTP: "auth/registration-resend-otp",
     RESET_PASSWORD: "auth/reset-password",
     REFRESH_TOKEN: "auth/refresh-token",
+    
   };
   
 //certificateApi

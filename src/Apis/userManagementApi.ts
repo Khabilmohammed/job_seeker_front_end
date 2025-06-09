@@ -20,6 +20,12 @@ const userManagementApi = createApi({
         getUserDetails: builder.query({
             query: (userId) => `userManagement/details/${userId}`,
         }),
+         reactivateUser: builder.mutation({
+            query: (userId) => ({
+                url: `userManagement/reactivate/${userId}`,
+                method: "POST",
+            }),
+        }),
         getUsersByRole: builder.query({
             query: (role) => `userManagement/role/${role}`,
         }),
@@ -54,6 +60,7 @@ export const {
     useGetUsersByRoleQuery,
     useDeactivateUserMutation,
     useChangeUserRoleMutation,
+    useReactivateUserMutation,
     useUpdateUserMutation,
 } = userManagementApi;
 
