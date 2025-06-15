@@ -8,6 +8,7 @@ import PostManagement from '../../Pages/Admin/PostManagement';
 import JobPage from '../../Pages/Admin/JobPage';
 import JobDetailsPage from '../../Pages/Admin/JobDetailsPage';
 import ApplicantsPage from '../../Pages/Admin/ApplicantsPage';
+import GetUserProfilePage from '../../Componenets/Shared/GetUserProfilePage';
 
 const AdminRoutes = () => (
   <Routes>
@@ -35,6 +36,10 @@ const AdminRoutes = () => (
 <Route
       path="/jobDetailsPage/:jobId"
       element={<ProtectedRoute element={<JobDetailsPage />} allowedRoles={['admin']} />}
+    />
+    <Route
+      path="getUserProfilePage/:userid"
+      element={<ProtectedRoute element={<GetUserProfilePage />} allowedRoles={['admin']} />}
     />
 
 <Route

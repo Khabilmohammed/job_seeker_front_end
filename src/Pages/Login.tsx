@@ -11,13 +11,6 @@ import { setLoggedInUser } from '../Storage/Redux/UserAuthSlice';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 import signalrService from '../Apis/signalrConnection/signalrService';
 
-
-const colors = {
-  primary: '#060606',
-  background: '#f5f5f5',
-  disabled: '#090909',
-};
-
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
@@ -132,34 +125,50 @@ function Login() {
             value={formData.email}
             onChange={handleInputChange}
             placeholder='Email'
-            className='w-full text-black bg-transparent border-b py-2 my-2 border-black outline-none focus:outline-none'
+            disabled={loading}
+            className={`w-full text-black bg-transparent border-b py-2 my-2 border-black outline-none focus:outline-none ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           />
 
           <div className='relative'>
             <input
-              type={isPasswordVisible ? 'text' : 'password'} 
+              type={isPasswordVisible ? 'text' : 'password'}
               name='password'
               value={formData.password}
               onChange={handleInputChange}
               placeholder='Password'
-              className='w-full text-black bg-transparent border-b py-2 my-2 border-black outline-none focus:outline-none'
+              disabled={loading}
+              className={`w-full text-black bg-transparent border-b py-2 my-2 border-black outline-none focus:outline-none ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             />
             <span
-              className='absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer'
-              onClick={() => setIsPasswordVisible(!isPasswordVisible)} 
+              className={`absolute right-0 top-1/2 transform -translate-y-1/2 ${
+                loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+              }`}
+              onClick={loading ? undefined : () => setIsPasswordVisible(!isPasswordVisible)}
             >
-              {isPasswordVisible ? <FaEye /> : <FaEyeSlash />} 
+              {isPasswordVisible ? <FaEye /> : <FaEyeSlash />}
             </span>
           </div>
         </div>
 
         <div className='w-full flex items-center justify-between my-4'>
           <div className='w-full flex items-center'>
-            <input type='checkbox' className='w-4 h-4 mr-2' />
-            <p className='text-sm'>Remember Me for 30 days</p>
+            <input
+              type='checkbox'
+              disabled={loading}
+              className={`w-4 h-4 mr-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            />
+            <p className={`text-sm ${loading ? 'opacity-50' : ''}`}>Remember Me for 30 days</p>
           </div>
-          <p className='text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2'
-            onClick={() => navigate("/forgetPassword")}>
+          <p
+            className={`text-sm font-medium whitespace-nowrap underline underline-offset-2 ${
+              loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+            }`}
+            onClick={loading ? undefined : () => navigate("/forgetPassword")}
+          >
             Forget Password
           </p>
         </div>
@@ -167,12 +176,50 @@ function Login() {
         <div className='w-full flex flex-col my-5'>
           <button
             type='submit'
-            className='w-full bg-[#060606] font-semibold text-white my-2 rounded-md p-4 text-center flex items-center justify-center cursor-pointer hover:bg-[#FCECD3] hover:text-[#060606] hover:border hover:border-[#FCECD3] transition duration-300'>
-            Login
+            disabled={loading}
+            className={`w-full font-semibold my-2 rounded-md p-4 text-center flex items-center justify-center transition duration-300 ${
+              loading
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                : 'bg-[#060606] text-white cursor-pointer hover:bg-[#FCECD3] hover:text-[#060606] hover:border hover:border-[#FCECD3]'
+            }`}
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Logging in...
+              </>
+            ) : (
+              'Login'
+            )}
           </button>
           <Link
-            to='/registration'
-            className='w-full bg-white font-semibold text-[#060606] border border-black my-2 rounded-md p-4 text-center flex items-center justify-center cursor-pointer hover:bg-[#FCECD3] hover:text-black hover:border-white transition duration-300'>
+            to={loading ? '#' : '/registration'}
+            className={`w-full font-semibold border my-2 rounded-md p-4 text-center flex items-center justify-center transition duration-300 ${
+              loading
+                ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
+                : 'bg-white text-[#060606] border-black cursor-pointer hover:bg-[#FCECD3] hover:text-black hover:border-white'
+            }`}
+            onClick={loading ? (e) => e.preventDefault() : undefined}
+          >
             Register
           </Link>
         </div>
@@ -181,16 +228,33 @@ function Login() {
           <div className='w-full h-[1px] bg-black/40'></div>
           <p className='text-lg absolute text-black/80 bg-[#f5f5f5] px-2'>or</p>
         </div>
-        <div className='w-full flex justify-center items-center border border-black/20 rounded-md p-4 cursor-pointer hover:bg-[#060606] hover:text-white hover:border-black transition duration-300'>
+        <div
+          className={`w-full flex justify-center items-center border rounded-md p-4 transition duration-300 ${
+            loading
+              ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-50'
+              : 'border-black/20 cursor-pointer hover:bg-[#060606] hover:text-white hover:border-black'
+          }`}
+          onClick={loading ? undefined : () => {/* Add Google sign-in logic here */}}
+        >
           <img src={GoogleImage} className='h-6 mr-2' alt='Google Logo' />
-          <p className='text-black text-lg font-medium hover:text-white'>Sign in with Google</p>
+          <p className={`text-lg font-medium ${loading ? 'text-gray-400' : 'text-black hover:text-white'}`}>
+            Sign in with Google
+          </p>
         </div>
       </form>
 
       {/* Already have an account */}
       <div className='w-full max-w-[500px] flex justify-between text-sm lg:text-base font-light mt-6'>
-        <p className='text-gray-700'>Don't have an account?</p>
-        <Link to='/registration' className='font-semibold text-black hover:underline'>
+        <p className={`text-gray-700 ${loading ? 'opacity-50' : ''}`}>Don't have an account?</p>
+        <Link
+          to={loading ? '#' : '/registration'}
+          className={`font-semibold ${
+            loading
+              ? 'text-gray-400 cursor-not-allowed'
+              : 'text-black hover:underline'
+          }`}
+          onClick={loading ? (e) => e.preventDefault() : undefined}
+        >
           Sign up for free
         </Link>
       </div>

@@ -1,5 +1,5 @@
 export enum SD_Roles{
-    ADMIN="admin",
-    USER="user",
-    COMPANY="company"
+    ADMIN="Admin",
+    USER="User",
+    COMPANY="Company"
 }
