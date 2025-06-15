@@ -14,11 +14,12 @@ const jobPostingApi = createApi({
       }),
     }),
     getAllJobPostings: builder.query({
-      query: () => ({
-        url:  JOB_POSTING_API_ENDPOINTS.GET_ALL,
-        method: "GET",
-      }),
-    }),
+  query: ({  location = '', jobType = '', experience = '' }) => ({
+    url: 'JobPosting/all',
+    method: 'GET',
+    params: {  location, jobType, experience }, 
+  }),
+  }),
 
     getAllJobPostingsAdmin: builder.query({
       query: () => ({

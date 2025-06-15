@@ -11,7 +11,7 @@ const JobDetailsPage: React.FC = () => {
   const { data, isLoading, error } = useGetJobPostingByIdQuery(jobId || '');
   const [deleteJobPosting] = useDeleteJobPostingMutation();
   const [updateJobPosting] = useUpdateJobPostingMutation();
-
+  console.log(data);
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
@@ -34,6 +34,10 @@ const JobDetailsPage: React.FC = () => {
   if (error || !job) return <div>Job not found or an error occurred</div>;
 
   const openUpdateModal = () => {
+     const formatDateForInput = (isoString: string) => {
+      return new Date(isoString).toISOString().split('T')[0]; // "2025-06-26"
+    };
+
     setUpdatedData({
       title: job.title,
       location: job.location,
@@ -42,7 +46,7 @@ const JobDetailsPage: React.FC = () => {
       jobType: job.jobType,
       skills: job.skills,
       description: job.description,
-      expiryDate: job.expiryDate,
+      expiryDate: formatDateForInput(job.expiryDate),
     });
     setShowUpdateModal(true);
   };
