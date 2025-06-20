@@ -53,7 +53,7 @@ function Login() {
           localStorage.setItem("userRole", role);
           signalrService.startConnection(); 
           if (role === "admin") {
-            navigate("/admin/usermanagement"); // Redirect admin to UserManagement page
+            navigate("/admin/adminHome"); // Redirect admin to UserManagement page
           } else if (role === "user") {
             navigate("/user/home"); // Redirect regular user to home
           } else if (role === "company") {

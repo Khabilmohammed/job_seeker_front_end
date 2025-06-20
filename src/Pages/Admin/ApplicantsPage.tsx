@@ -47,7 +47,9 @@ const ApplicantsPage: React.FC = () => {
             View Resume
           </a>
         </td>
-        <td className="px-4 py-2 border">{applicant.coverLetter}</td>
+       <td className="px-4 py-2 border">
+          {applicant.coverLetter?.split(" ").slice(0, 10).join(" ") + (applicant.coverLetter?.split(" ").length > 10 ? "..." : "")}
+      </td>
         <td className="px-4 py-2 border">{applicant.status}</td>
         <td className="px-4 py-2 border">{new Date(applicant.applicationDate).toLocaleDateString()}</td>
         
