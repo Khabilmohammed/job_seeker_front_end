@@ -4,11 +4,13 @@ import { Story as StoryInterface } from '../../Interfaces/Story';
 
 interface StoryState {
   stories: StoryInterface[];
+  loading?: boolean; // Optional loading state
   error: string | null;
 }
 
 const initialState: StoryState = {
   stories: [],
+  loading: false, // Initialize loading state
   error: null,
 };
 
@@ -16,11 +18,17 @@ const storySlice = createSlice({
   name: 'story',
   initialState,
   reducers: {
-    fetchStoriesSuccess: (state, action: PayloadAction<StoryInterface[]>) => {
-      if (Array.isArray(action.payload)) { 
-        state.stories = action.payload;
-      }
-      state.error = null;
+    setStories(state, action: PayloadAction<StoryInterface[]>) {
+      state.stories = action.payload;
+    },
+     addStory(state, action: PayloadAction<StoryInterface>) {
+      state.stories.push(action.payload);
+    },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
+    },
+    setError(state, action: PayloadAction<string | null>) {
+      state.error = action.payload;
     },
     fetchStoriesFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -31,6 +39,6 @@ const storySlice = createSlice({
   },
 });
 
-export const { fetchStoriesSuccess, fetchStoriesFailure,deleteStoryFromState } = storySlice.actions;
+export const { setStories,addStory, fetchStoriesFailure,deleteStoryFromState,setLoading, setError  } = storySlice.actions;
 
 export default storySlice.reducer;

@@ -8,14 +8,15 @@ import { useCreateLikeMutation, useDeleteLikeMutation, useGetLikesForPostQuery }
 import LikesModal from '../Shared/LikesModel'; 
 import CommentsModal from '../Shared/CommandModel';
 import { useCreateCommentMutation, useGetCommentsForPostQuery } from '../../Apis/commentApi';
-import { useSavePostMutation, useRemoveSavedPostMutation } from '../../Apis/savedPostApi'; // Import the API hooks
+import { useSavePostMutation } from '../../Apis/savedPostApi'; // Import the API hooks
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';import { useSharePostMutation } from '../../Apis/shareApi';
 import ShareModal from './ShareModal';
 import toastNotify from '../../Taghelper/toastNotify';
+import { addSavedPost, removeSavedPostFromRedux } from '../../Storage/Redux/SavedPostSlice';
 interface PostCardProps {
   post: PostModel;
   userId: string;
@@ -24,6 +25,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
   const userRole = useSelector((state: Rootstate) => state.userAuthStore.role);
+  const dispatch = useDispatch();
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likeCount || 0);
   const [isSaved, setIsSaved] = useState(false); 
@@ -42,7 +44,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
   console.log(commentsData);
   // Save/Unsaved Post
   const [savePost] = useSavePostMutation();
-  const [removeSavedPost] = useRemoveSavedPostMutation();
+  
+  const savedPosts = useSelector((state: Rootstate) => state.savedPostStore.savedPosts);
+  
 
   const [comments, setComments] = useState<{ userName: string; content: string; timestamp: string; }[]>([]);
 
@@ -91,19 +95,24 @@ const PostCard: React.FC<PostCardProps> = ({ post, userId, userName }) => {
     }
   };
 
-  const handleSavePost = async () => {
-    try {
-      if (isSaved) {
-        await removeSavedPost(post.postId).unwrap();
-        setIsSaved(false);
-      } else {
-        await savePost(post.postId).unwrap();
-        setIsSaved(true);
-      }
-    } catch (error) {
-      console.error("Failed to update saved post:", error);
+const handleSavePost = async () => {
+  try {
+    if (!isSaved) {
+      const response = await savePost(post.postId).unwrap();
+      dispatch(addSavedPost(response.result));
+      setIsSaved(true); // <-- local state update
+      toastNotify("Post saved!", "success");
+    } else {
+      dispatch(removeSavedPostFromRedux(post.postId));
+      setIsSaved(false); // <-- local state update
+      toastNotify("Post removed from saved list.", "info");
     }
-  };
+  } catch (error) {
+    console.error("Failed to update saved post:", error);
+    toastNotify("Failed to update saved post", "error");
+  }
+};
+
   const handleProfileClick = () => {
     if(userRole==='company'){
       if (post.userRole==='company') {

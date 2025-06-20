@@ -1,43 +1,53 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetUserSavedPostsQuery, useRemoveSavedPostMutation } from "../../Apis/savedPostApi";
 import { Rootstate } from "../../Storage/Redux/store";
-import { useSelector } from "react-redux";
+import { setSavedPosts, removeSavedPostFromRedux } from "../../Storage/Redux/SavedPostSlice";
+import toastNotify from "../../Taghelper/toastNotify";
 
 const SavedPost: React.FC = () => {
+  const dispatch = useDispatch();
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
-  const { data: saveddata, error, isLoading, refetch } = useGetUserSavedPostsQuery(userId);
+
+  const {
+    data: savedData,
+    error,
+    isLoading,
+    
+  } = useGetUserSavedPostsQuery(userId);
+
   const [removeSavedPost, { isLoading: isRemoving }] = useRemoveSavedPostMutation();
 
-  const savedPosts = saveddata?.result || [];
+  const savedPosts = useSelector((state: Rootstate) => state.savedPostStore.savedPosts);
 
-  // Loading state
-  if (isLoading) return <p>Loading...</p>;
-
-  // Error state
-  if (error) return <p>Error loading saved posts. Please try again later.</p>;
-
-  // Display message if no posts are available
-  if (savedPosts.length === 0) {
-    return <p className="text-gray-500">No saved posts available.</p>;
-  }
+  useEffect(() => {
+    if (savedData?.result) {
+      dispatch(setSavedPosts(savedData.result));
+    }
+  }, [savedData, dispatch]);
 
   const handleRemovePost = async (postId: number) => {
     try {
       await removeSavedPost(postId).unwrap();
-      console.log(`Post with ID: ${postId} removed successfully`);
-      refetch(); 
+      dispatch(removeSavedPostFromRedux(postId));
+      toastNotify("Post removed from saved list", "success");
     } catch (err) {
+      toastNotify("Failed to remove post", "error");
       console.error("Failed to remove post:", err);
     }
   };
 
-  console.log("savedPosts", savedPosts);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading saved posts. Please try again later.</p>;
+  if (savedPosts.length === 0) {
+    return <p className="text-gray-500">No saved posts available.</p>;
+  }
 
   return (
     <div className="saved-posts p-4">
       <h2 className="text-lg font-bold mb-4">Saved Posts</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {savedPosts.map((savedPost: any) => (
+        {savedPosts.map((savedPost) => (
           <div
             key={savedPost.postId}
             className="saved-post bg-white border rounded-md shadow-md overflow-hidden"
@@ -55,13 +65,13 @@ const SavedPost: React.FC = () => {
 
             {/* Post Content */}
             <div>
-              {savedPost.imageUrls.length > 0 && (
-                <img
-                  src={savedPost.imageUrls[0]}
-                  alt="Post"
-                  className="w-full h-48 object-cover"
-                />
-              )}
+              {Array.isArray(savedPost.imageUrls) && savedPost.imageUrls.length > 0 && (
+  <img
+    src={savedPost.imageUrls[0]}
+    alt="Post"
+    className="w-full h-48 object-cover"
+  />
+)}
               <div className="p-3">
                 <p className="text-sm truncate">{savedPost.postContent}</p>
                 <div className="flex justify-between mt-2 text-xs text-gray-600">

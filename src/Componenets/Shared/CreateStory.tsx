@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useCreateStoryMutation } from '../../Apis/storyApi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import toastNotify from '../../Taghelper/toastNotify';
+import { addStory } from '../../Storage/Redux/StorySlice';
 
 interface CreateStoryProps {
   refetch: () => void; 
@@ -11,6 +12,7 @@ interface CreateStoryProps {
 const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
   const [image, setImage] = useState<File | null>(null);
   const [createStory] = useCreateStoryMutation();
+  const dispatch = useDispatch();
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,10 +27,11 @@ const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
       try {
         setIsSubmitting(true);
         const result = await createStory(formData).unwrap();
+        dispatch(addStory(result.result));
         console.log('Story created:', result);
         toastNotify("The Stroy has been Created","success")
         setImage(null);
-        refetch(); 
+       
       } catch (error) {
         toastNotify("The Stroy has not Created!!","error")
         console.error("Failed to create story:", error);

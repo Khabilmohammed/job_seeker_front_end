@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import { useGetStoriesByUserIdQuery, useGetStoriesFromOthersQuery } from '../../Apis/storyApi';
-import { fetchStoriesSuccess, fetchStoriesFailure } from '../../Storage/Redux/StorySlice';
+import {  fetchStoriesFailure, setStories } from '../../Storage/Redux/StorySlice';
 import CoverImage from '../../Assets/Images/Leonardo_Phoenix_A_sleek_modern_laptop_sits_centered_on_a_mini_3.jpg';
 import { Story as StoryInterface } from '../../Interfaces/Story';
 import StoryModal from '../Shared/StoryModel';
@@ -22,13 +22,13 @@ const StorySection: React.FC = () => {
   // Fetch user and other stories on component mount
   useEffect(() => {
     if (userStoriesData && userStoriesData.isSuccess) {
-      dispatch(fetchStoriesSuccess(userStoriesData.result));
+      dispatch(setStories(userStoriesData.result));
     } else if (userStoriesError) {
       dispatch(fetchStoriesFailure("Failed to fetch user stories"));
     }
 
     if (otherStoriesData && otherStoriesData.isSuccess) {
-      dispatch(fetchStoriesSuccess(otherStoriesData.result));
+      dispatch(setStories(otherStoriesData.result));
     } else if (otherStoriesError) {
       dispatch(fetchStoriesFailure("Failed to fetch stories from others"));
     }

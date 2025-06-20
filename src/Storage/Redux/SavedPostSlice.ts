@@ -1,29 +1,39 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { SavedPostModel } from "../../Interfaces/index";
+import { createSlice,PayloadAction } from "@reduxjs/toolkit";
+import { SavedPostModel } from "../../Interfaces";
 
 // Define the initial state for saved posts
-export const initialSavedPostState: SavedPostModel[] = [];
+interface SavedPostState {
+  savedPosts: SavedPostModel[];
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: SavedPostState = {
+  savedPosts: [],
+  loading: false,
+  error: null,
+};
 
 // Create the SavedPostSlice
 export const SavedPostSlice = createSlice({
   name: "savedPosts",
-  initialState: initialSavedPostState,
+  initialState,
   reducers: {
-    setSavedPosts: (state, action) => {
-      return action.payload; // Set the saved posts list
+     setSavedPosts(state, action: PayloadAction<SavedPostModel[]>) {
+      state.savedPosts = action.payload;
     },
-    addSavedPost: (state, action) => {
-      state.push(action.payload); // Add a new saved post
+     addSavedPost(state, action: PayloadAction<SavedPostModel>) {
+      state.savedPosts.push(action.payload);
     },
-    removeSavedPost: (state, action) => {
-      return state.filter((savedPost: any) => savedPost.savedPostId !== action.payload); // Remove the saved post
+     removeSavedPostFromRedux: (state, action: PayloadAction<number>) => {
+      state.savedPosts = state.savedPosts.filter(p => p.postId !== action.payload);
     },
-    resetSavedPosts: () => {
-      return initialSavedPostState; // Reset the state to the initial value
+    fetchSavedPostsFailure(state, action: PayloadAction<string>) {
+      state.error = action.payload;
     },
   },
 });
 
 // Export the actions and reducer
-export const { setSavedPosts, addSavedPost, removeSavedPost, resetSavedPosts } = SavedPostSlice.actions;
+export const { setSavedPosts, addSavedPost, removeSavedPostFromRedux,fetchSavedPostsFailure  } = SavedPostSlice.actions;
 export const savedPostReducer = SavedPostSlice.reducer;

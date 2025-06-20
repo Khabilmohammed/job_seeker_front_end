@@ -5,5 +5,4 @@ export interface Story {
   isActive: boolean;  // Adjust types based on your API response
   userName: string;   // Make sure this matches your API data
   imageUrl: string; 
-  images: { postId: string; imageUrl: string }[]; 
   }

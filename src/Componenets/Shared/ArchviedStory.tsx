@@ -4,7 +4,7 @@ import { Rootstate } from '../../Storage/Redux/store';
 import { useDeleteStoryMutation, useGetArchivedStoriesQuery } from '../../Apis/storyApi';
 import { Story as StoryType } from '../../Interfaces/Story'; 
 import StoryModal from './StoryModel';
-import { fetchStoriesFailure, fetchStoriesSuccess } from '../../Storage/Redux/StorySlice';
+import { fetchStoriesFailure } from '../../Storage/Redux/StorySlice';
 
 const ArchviedStory: React.FC = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const ArchviedStory: React.FC = () => {
 
   useEffect(() => {
     if (userStoriesData && userStoriesData.isSuccess) {
-      dispatch(fetchStoriesSuccess(userStoriesData.result));
+
     } else if (error) {
       dispatch(fetchStoriesFailure("Failed to fetch user stories"));
     }
