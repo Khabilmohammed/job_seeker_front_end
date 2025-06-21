@@ -1,9 +1,23 @@
 import { useGetFollowersQuery } from "../../Apis/followApi";
 import { FaUserCircle } from "react-icons/fa"; 
+import { Rootstate } from "../../Storage/Redux/store";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const FollowersList = ({ userId }: { userId: string }) => {
   const { data: followers, error, isLoading } = useGetFollowersQuery(userId);
+  const userRole = useSelector((state: Rootstate) => state.userAuthStore.role);
+  const navigate = useNavigate();
 
+const handleProfileClick = (person: any) => {
+  if (userRole === "company") {
+    if (person.userRole === "company") navigate(`/company/getCompanyProfiePage/${person.userId}`);
+    else navigate(`/company/getUserProfilePage/${person.userId}`);
+  } else {
+    if (person.userRole === "company") navigate(`/user/getCompanyProfiePage/${person.userId}`);
+    else navigate(`/user/getUserProfilePage/${person.userId}`);
+  }
+};
   if (isLoading)
     return (
       <div className="flex justify-center items-center py-4">
@@ -49,10 +63,13 @@ const FollowersList = ({ userId }: { userId: string }) => {
 
           {/* Follower Details */}
           <div>
-            <p className="text-lg font-semibold text-gray-800">
+            <p
+              onClick={() => handleProfileClick(follower)}
+              className="text-lg font-semibold text-gray-800 hover:underline cursor-pointer"
+            >
               {follower.firstName} {follower.lastName}
             </p>
-            <p className="text-sm text-gray-500">@{follower.userName}</p>
+
           </div>
         </li>
       ))}
