@@ -10,19 +10,19 @@ function CompanyLayout() {
     <HeaderbarCompany/>
 
     {/* Main Content Area */}
-    <div className="flex flex-1 mt-16"> {/* Adjust margin-top based on header height */}
+    <div className="flex flex-1 mt-16"> 
       {/* Sidebar */}
       <SidebarCompany />
 
-      {/* Main Content and Fixed Messages Section */}
+     
       <div className="flex flex-row flex-grow overflow-hidden">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          <Outlet /> {/* This will include StorySection, Feed, etc. */}
+          <Outlet /> 
         </div>
 
-        {/* Fixed Messages Section on larger screens */}
-        <div className="hidden lg:block lg:w-80"> {/* Only show on larger screens */}
+       
+        <div className="hidden lg:block lg:w-80"> 
           <div className="fixed right-0 top-16 h-full w-80 bg-[#745858] shadow-lg border-l border-gray-200">
             <PeopleYouMayKnow/>
           </div>

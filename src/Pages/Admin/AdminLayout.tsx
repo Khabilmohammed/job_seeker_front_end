@@ -3,17 +3,24 @@ import HeaderbarAdmin from "../../Componenets/Admin/Headerbar/HeaderbarAdmin";
 import SidebarAdmin from "../../Componenets/Admin/sideBarAdmin/SidebarAdmin";
 
 export const AdminLayout = () => {
-    return (
-      <div className="flex flex-col min-h-screen bg-gray-100">
+  return (
+    <div className="bg-gray-100">
+      
+      <div className="fixed top-0 left-0 right-0 z-50">
         <HeaderbarAdmin />
-        <div className="flex flex-1">
-          <SidebarAdmin />
-          <div className="flex-1 flex flex-col overflow-y-auto p-4">
-            <div className="w-full max-w-7xl mx-auto">
-            <Outlet /> 
-            </div>
-          </div>
+      </div>
+
+      
+      <div className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 z-40">
+        <SidebarAdmin />
+      </div>
+
+     
+      <div className="pt-16 pl-64 min-h-screen bg-gray-100">
+        <div className="p-4 max-w-7xl mx-auto overflow-y-auto">
+          <Outlet />
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
