@@ -16,7 +16,7 @@ interface Props {
 
 const ChattedUsersSidebar: React.FC<Props> = ({ users, isLoading, error, onSelectUser }) => {
   return (
-    <div className="w-80 bg-white border-r shadow-lg">
+    <div className="w-80 bg-green-50 border-r shadow-lg">
       <div className="p-4">
         <div className="flex items-center mb-4">
           <FaSearch className="text-gray-500 mr-2" />
