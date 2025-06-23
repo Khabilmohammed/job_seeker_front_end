@@ -63,6 +63,11 @@ const MessagePage = () => {
   };
 
   return (
+    <div className="flex flex-col h-[87vh] bg-gradient-to-br from-gray-500 to-gray-200">
+      {/* Header */}
+      <header className="bg-white shadow-md px-6 py-4 sticky top-0 z-10">
+        <h1 className="text-2xl font-semibold text-gray-800">Messages</h1>
+      </header>
     <div className="flex h-screen bg-gray-50">
       <ChattedUsersSidebar
         users={chattedUsers}
@@ -72,11 +77,12 @@ const MessagePage = () => {
       />
       <ChatWindow
       currentUserToken={token}
-  selectedUser={selectedUser}
-  messages={messages}
-  isLoading={isLoadingMessages}
-  onDeleteMessage={handleDeleteMessage}
-/>
+        selectedUser={selectedUser}
+        messages={messages}
+        isLoading={isLoadingMessages}
+        onDeleteMessage={handleDeleteMessage}
+      />
+    </div>
     </div>
   );
 };
