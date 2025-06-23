@@ -42,7 +42,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg shadow-lg">
+    <div className="p-6 bg-gradient-to-br from-green-600 to-green-900 rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold text-center text-white mb-4">Share Your Story</h2>
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <input 
@@ -50,12 +50,12 @@ const CreateStory: React.FC<CreateStoryProps> = ({ refetch }) => {
           onChange={(e) => setImage(e.target.files?.[0] || null)} 
           accept="image/*" 
           required 
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-white hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-white hover:border-green-800-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
         />
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className={`w-full py-2 px-4 rounded-lg text-white transition duration-300 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+          className={`w-full py-2 px-4 rounded-lg text-white transition duration-300 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#075e54] hover:bg-[#128c7e]'}`}
         >
           {isSubmitting ? 'Creating...' : 'Create Story'}
         </button>

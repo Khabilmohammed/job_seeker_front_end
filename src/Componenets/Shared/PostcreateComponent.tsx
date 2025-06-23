@@ -55,7 +55,7 @@ const PostCreateComponent: React.FC<PostCreateComponentProps> = ({ onPostCreated
     <div className="bg-white p-6 rounded-lg shadow-md mb-6 transition-all hover:shadow-xl">
       <form onSubmit={handleSubmit(onSubmit)}>
         <textarea
-          className="w-full border border-gray-300 p-3 rounded-lg mb-3 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full border border-gray-300 p-3 rounded-lg mb-3 resize-none focus:outline-none focus:ring-2 focus:ring-lime-600"
           placeholder="What's on your mind?"
           rows={4}
           {...register('content', { required: true })}
@@ -98,7 +98,7 @@ const PostCreateComponent: React.FC<PostCreateComponentProps> = ({ onPostCreated
 
         <button
           type="submit"
-          className={`bg-purple-500 text-white font-bold py-2 px-6 rounded-full shadow-md transition-all hover:bg-purple-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          className={`bg-[#075e54] text-white font-bold py-2 px-6 rounded-full shadow-md transition-all hover:bg-[#128c7e] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
             isLoading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           disabled={isLoading}

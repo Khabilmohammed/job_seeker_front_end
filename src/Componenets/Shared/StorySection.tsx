@@ -102,7 +102,7 @@ const StorySection: React.FC = () => {
       <div ref={scrollContainerRef} className="flex overflow-x-auto space-x-4 p-2 scrollbar-hide">
         {/* Display all users' stories including own */}
         {Object.entries(groupedStories).map(([userId, userStories]) => (
-          <div key={userId} className="flex flex-col items-center flex-shrink-0 w-24" onClick={() => handleStoryClick(userStories, userId)}>
+          <div key={userId} className="flex flex-col items-center flex-shrink-0 w-24 ml-4" onClick={() => handleStoryClick(userStories, userId)}>
             <div className="relative group">
               <div className="relative">
                 <img
@@ -127,13 +127,13 @@ const StorySection: React.FC = () => {
       {/* Scroll Buttons */}
       <button
         onClick={scrollLeft}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-[#075e54] text-white p-2   rounded-full shadow-lg hover:bg-[#34b7f1]"
       >
         ←
       </button>
       <button
         onClick={scrollRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600"
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-[#075e54] text-white p-2 rounded-full shadow-lg hover:bg-[#34b7f1]"
       >
         →
       </button>

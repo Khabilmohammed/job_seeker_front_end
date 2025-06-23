@@ -49,7 +49,7 @@ function SideBar() {
     <div className="flex gap-6 ">
     {/* Sidebar */}
     <div
-      className={`bg-[#1a1a1a] min-h-screen ${
+      className={`bg-[#075e54] min-h-screen ${
         open ? "w-72" : "w-16"
       } duration-500 text-gray-100 px-4 sticky top-16 h-screen  z-10`}
     >
@@ -67,7 +67,7 @@ function SideBar() {
             key={i}
             className={`${
               menu.margin && "mt-5"
-            } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+            } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-[#128c7e] rounded-md`}
             onClick={menu.onClick}
           >
             <div>{React.createElement(menu.icon, { size: "20" })}</div>

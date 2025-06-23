@@ -105,7 +105,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-semibold text-gray-800">{username}</h2>
           <button
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#075e54] rounded hover:bg-[#128c7e] transition"
             onClick={() => setIsEditing(true)}
           >
             Edit Profile

@@ -65,7 +65,7 @@ const JobDetailPage: React.FC = () => {
         </div>
         <button
           onClick={handleApply}
-          className="px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+          className="px-6 py-3 text-white bg-[#075e54] rounded-lg hover:bg-[#128c7e] transition"
         >
           Apply Now
         </button>

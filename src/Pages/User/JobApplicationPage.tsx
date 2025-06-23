@@ -201,7 +201,7 @@ const JobApplicationPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700"
+            className="w-full py-3 bg-[#075e54] text-white delay-150 duration-300 font-bold rounded-lg hover:bg-[#128c7e]"
           >
             Submit Application
           </button>

@@ -76,14 +76,14 @@ const UserExperience: React.FC<ExperienceProps> = ({ experiences, onUpdate }) =>
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg mt-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Experience</h2>
+        <h2 className="text-xl font-bold mb-4 flex justify-between items-center">Experience</h2>
         <button
           onClick={() => {
             setEditMode((prev) => !prev);
             setEditingExperience(null);
             setNewExperience({ experienceId: experiences.length + 1, title: '', startYear: currentYear, endYear: undefined, isCurrent: false });
           }}
-          className="text-blue-600 underline"
+          className="bg-[#075e54] text-white px-4 py-2 rounded-md hover:bg-[#128c7e] transition duration-300"
         >
           {editMode ? 'Cancel' : 'Add Experience'}
         </button>
@@ -135,7 +135,7 @@ const UserExperience: React.FC<ExperienceProps> = ({ experiences, onUpdate }) =>
           <div className="flex justify-end mt-2">
             <button
               onClick={handleSave}
-              className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition duration-200"
+              className="px-4 py-2 text-white bg-green-700 rounded-md hover:bg-green-900 transition duration-200"
             >
               {editingExperience ? 'Update' : 'Save'}
             </button>

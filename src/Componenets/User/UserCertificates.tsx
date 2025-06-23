@@ -90,9 +90,9 @@ const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
       Certificates
       <button
         onClick={() => setIsEditing(!isEditing)}
-        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+        className="px-4 py-2 text-white bg-[#075e54] rounded hover:bg-[#128c7e]"
       >
-        {isEditing ? 'Cancel' : 'Edit'}
+        {isEditing ? 'Cancel' : 'Add'}
       </button>
     </h2>
 

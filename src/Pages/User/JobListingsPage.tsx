@@ -35,13 +35,13 @@ const JobListingsPage = () => {
           value={filters.location}
           onChange={handleChange}
           placeholder="Filter by Location"
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded-lg border-green-600  ring-green-800 focus:ring-green-900 focus:outline-none"
         />
         <select
           name="jobType"
           value={filters.jobType}
           onChange={handleChange}
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded-lg border-green-600 ring-green-800 focus:ring-green-900 focus:outline-none"
         >
           <option value="">All Job Types</option>
           <option value="Full-Time">Full Time</option>
@@ -54,7 +54,7 @@ const JobListingsPage = () => {
           value={filters.experience}
           onChange={handleChange}
           placeholder="Experience (e.g. 2+ years)"
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded-lg border-green-600  ring-green-800 focus:ring-green-900 focus:outline-none"
         />
       </div>
 
@@ -62,7 +62,7 @@ const JobListingsPage = () => {
       <div className="mb-6">
         <button
           onClick={() => refetch()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-[#075e54] text-white rounded hover:bg-[#128c7e]"
         >
           Apply Filters
         </button>
@@ -108,7 +108,7 @@ const JobListingsPage = () => {
               </div>
               <button
                 onClick={() => handleViewJob(job.jobId)}
-                className="mt-4 md:mt-0 px-6 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition"
+                className="mt-4 md:mt-0 px-6 py-2 text-[#128c7e] border border-[#128c7e] rounded-lg hover:bg-[#128c7e] hover:text-white transition"
               >
                 View Details
               </button>

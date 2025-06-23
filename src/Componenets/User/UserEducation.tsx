@@ -85,15 +85,15 @@ const UserEducation: React.FC<EducationProps> = ({ education, onUpdate, refetch 
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-      <h2 className="text-2xl font-bold mb-4 border-b pb-2">Education</h2>
-
-      {/* Button to show input fields */}
-      <button
-        onClick={() => setShowInputFields(!showInputFields)}
-        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 mb-4"
-      >
-        {showInputFields ? 'Cancel' : 'Add New Education'}
-      </button>
+      <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold">Education</h2>
+    <button
+      onClick={() => setShowInputFields(!showInputFields)}
+      className="px-4 py-2 text-white bg-[#075e54] rounded hover:bg-[#128c7e]"
+    >
+      {showInputFields ? 'Cancel' : 'Add New Education'}
+    </button>
+  </div>
 
       {/* New Education Input Fields */}
       {showInputFields && (
@@ -138,7 +138,7 @@ const UserEducation: React.FC<EducationProps> = ({ education, onUpdate, refetch 
           />
           <button
             onClick={handleAddEducation}
-            className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+            className="px-4 py-2 text-white bg-[#075e54] rounded hover:bg-[#128c7e]"
           >
             Add Education
           </button>

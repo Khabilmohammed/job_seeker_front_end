@@ -70,7 +70,7 @@ const AppliedJobsPage = () => {
                 </span>
                 <button
                   onClick={() => navigate(`/user/singleJobDetailsPage/${job.jobApplicationId}`)}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-green-700 hover:text-green-950 font-medium"
                 >
                   View Details
                 </button>

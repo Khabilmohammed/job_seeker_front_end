@@ -43,6 +43,7 @@ useEffect(() => {
   }
 }, [jobPage, jobPostings]);
 
+
 const onJobPageChange = (p: number) => {
   setJobPage(p);
 };
@@ -168,7 +169,7 @@ const onJobPageChange = (p: number) => {
                       <span className="text-sm">{post.comments?.length || 0}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm">{new Date(post.createdAt).toLocaleDateString()}</span>
+                      <span className="text-sm">{new Date(post.createdAt).toISOString().split('T')[0]}</span>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -221,7 +222,7 @@ const onJobPageChange = (p: number) => {
                 <span className="text-sm">{job.jobType}</span>
               </TableCell>
               <TableCell>
-                <span className="text-sm">{new Date(job.createdAt).toLocaleDateString()}</span>
+                <span className="text-sm">{new Date(job.postedDate).toISOString().split('T')[0]}</span>
               </TableCell>
             </TableRow>
           ))}

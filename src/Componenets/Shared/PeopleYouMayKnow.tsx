@@ -58,7 +58,7 @@ const PeopleYouMayKnow: React.FC = () => {
   if (error) return <div className="text-white">Failed to load suggestions.</div>;
 
   return (
-    <div className="bg-[#1a1a1a] p-4 rounded-md shadow-md">
+    <div className="p-4">
       <h3 className="text-white text-lg font-bold mb-4">People You May Know</h3>
       {data && data.length > 0 ? (
         <div className="space-y-4">
@@ -68,7 +68,7 @@ const PeopleYouMayKnow: React.FC = () => {
             return (
               <div
                 key={person.userId}
-                className="flex items-center bg-gray-800 p-4 rounded-md shadow-md"
+                className="flex items-center bg-[#f5f5f5] p-4 rounded-md shadow-md"
               >
                 {/* Profile Picture */}
                 <div className="w-16 h-16 rounded-full flex-shrink-0 overflow-hidden">
@@ -79,7 +79,7 @@ const PeopleYouMayKnow: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <FaUserCircle className="w-full h-full text-gray-500" />
+                    <FaUserCircle className="w-full h-full text-gray-600" />
                   )}
                 </div>
 
@@ -87,7 +87,7 @@ const PeopleYouMayKnow: React.FC = () => {
                 <div className="ml-4 flex-1">
                   <p
                     onClick={() => handleProfileClick(person)}
-                    className="text-white font-semibold hover:underline cursor-pointer"
+                    className="text-black font-semibold hover:underline cursor-pointer"
                   >
                     {person.firstName} {person.lastName}
                   </p>

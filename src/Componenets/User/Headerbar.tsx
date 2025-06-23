@@ -31,7 +31,7 @@ const Headerbar = () => {
   });
 
   return (
-    <header className="bg-[#1a1a1a] shadow-md py-3 px-6 flex justify-between items-center fixed top-0 left-0 w-full z-50">
+    <header className="bg-[#075e54] shadow-md py-4 px-6 flex justify-between items-center fixed top-0 left-0 w-full z-50">
       {/* Logo */}
       <div className="flex items-center space-x-3">
         <img className="h-10 w-10" src={logo} alt="Logo" />

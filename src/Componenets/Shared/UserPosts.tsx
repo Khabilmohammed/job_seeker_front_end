@@ -29,29 +29,33 @@ const UserPosts: React.FC = () => {
   };
 
   return (
-    <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-      {posts.map((post: PostModel) => (
-        <div
-          key={post.postId}
-          className="relative rounded-lg overflow-hidden shadow-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
-          onClick={() => handlePostClick(post.postId)}
-        >
-          {/* Display the first image of the post, or a placeholder if no image */}
-          <img
-            src={post.images?.[0]?.imageUrl || "https://via.placeholder.com/150"}
-            alt="Post"
-            className="w-full h-full object-cover"
-          />
-          {/* Overlay with post details */}
-          <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity">
-            <div className="flex items-center justify-center h-full text-white">
-              <span className="mr-2">💬 {post.commentCount}</span>
-              <span>❤️ {post.likes?.length || 0}</span>
-            </div>
+    <div className="mt-8">
+  <h2 className="text-2xl font-bold mb-5 text-gray-800 ">Posts You Have Added</h2>
+
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    {posts.map((post: PostModel) => (
+      <div
+        key={post.postId}
+        className="relative rounded-lg overflow-hidden shadow-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
+        onClick={() => handlePostClick(post.postId)}
+      >
+        {/* Display the first image of the post, or a placeholder if no image */}
+        <img
+          src={post.images?.[0]?.imageUrl || "https://via.placeholder.com/150"}
+          alt="Post"
+          className="w-full h-full object-cover"
+        />
+        {/* Overlay with post details */}
+        <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity">
+          <div className="flex items-center justify-center h-full text-white">
+            <span className="mr-2">💬 {post.commentCount}</span>
+            <span>❤️ {post.likes?.length || 0}</span>
           </div>
         </div>
-      ))}
-    </div>
+      </div>
+    ))}
+  </div>
+</div>
   );
 };
 

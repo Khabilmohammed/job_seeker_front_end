@@ -1,52 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { useDeleteUserMutation, useGetAllUsersQuery, useDeactivateUserMutation, useChangeUserRoleMutation, useReactivateUserMutation } from '../../Apis/userManagementApi';
+import React, { useState, useEffect, useMemo } from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Avatar, Button, Tooltip } from '@mui/material';
+import { FaUserAlt, FaTrash, FaUserShield, FaUserEdit, FaCheck, FaExclamationTriangle, FaTimes, FaBuilding, FaUser } from 'react-icons/fa';
+import { useDeleteUserMutation, useGetAllUsersQuery, useDeactivateUserMutation, useReactivateUserMutation, useChangeUserRoleMutation } from '../../Apis/userManagementApi';
 import toastNotify from '../../Taghelper/toastNotify';
-import { FaUserAlt, FaUserShield, FaBuilding, FaUser, FaExclamationTriangle, FaCheck, FaTimes } from 'react-icons/fa';
-import { Badge, Avatar, Button, Modal, ModalBody, ModalFooter, ModalHeader } from '@windmill/react-ui';
-import TableComponent from '../../Componenets/Shared/TableComponent';
 import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
 import { SD_Roles } from '../../Utility/SD';
 
 const UserManagement: React.FC = () => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllUsersQuery({});
   const usersData = data.result || [];
-  const [page, setPage] = useState<number>(1);
-  const [paginatedData, setPaginatedData] = useState<any[]>([]);
-  const resultsPerPage = 15;
 
   const [deleteUser] = useDeleteUserMutation();
   const [deactivateUser] = useDeactivateUserMutation();
-  const [changeUserRole] = useChangeUserRoleMutation();
   const [reactivateUser] = useReactivateUserMutation();
+  const [changeUserRole] = useChangeUserRoleMutation();
 
-  // State for modals
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
-  const [selectedUser, setSelectedUser] = useState<any>(null); // Track the selected user for actions
-  const [newRole, setNewRole] = useState<string>(''); // New role state for change role functionality
-
-  // State for deactivation confirmation modal
-  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
-  const [userToDeactivate, setUserToDeactivate] = useState<any>(null);
-
-  // Enhanced state for role change modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [newRole, setNewRole] = useState<string>('');
   const [isRoleChangeModalOpen, setIsRoleChangeModalOpen] = useState(false);
   const [isRoleChangeConfirmOpen, setIsRoleChangeConfirmOpen] = useState(false);
+  const [roleValidationError, setRoleValidationError] = useState('');
   const [roleChangeLoading, setRoleChangeLoading] = useState(false);
-  const [roleValidationError, setRoleValidationError] = useState<string>('');
+  const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    if (Array.isArray(usersData)) {
-      const slicedData = usersData.slice((page - 1) * resultsPerPage, page * resultsPerPage);
-      setPaginatedData(slicedData);
-    }
-  }, [page, usersData]);
+const filteredUsers = usersData.filter((user:any) => {
+  const search = searchText.toLowerCase();
+  return (
+    user.firstName.toLowerCase().includes(search) ||
+    user.lastName.toLowerCase().includes(search) ||
+    user.email.toLowerCase().includes(search) ||
+    user.role.toLowerCase().includes(search)
+  );
+});
 
-  const onPageChange = (p: number) => {
-    setPage(p);
-  };
+  
 
-  // Open modal for delete confirmation
   const openModal = (userId: string) => {
     setUserToDelete(userId);
     setIsModalOpen(true);
@@ -57,61 +48,35 @@ const UserManagement: React.FC = () => {
     setUserToDelete(null);
   };
 
-  // Open modal for deactivate confirmation
-  const openDeactivateModal = (user: any) => {
-    setUserToDeactivate(user);
-    setIsDeactivateModalOpen(true);
-  };
-
-  const closeDeactivateModal = () => {
-    setIsDeactivateModalOpen(false);
-    setUserToDeactivate(null);
-  };
-
   const confirmDelete = async () => {
     if (userToDelete) {
       try {
         await deleteUser(userToDelete).unwrap();
         toastNotify("The user has been deleted", 'success');
-        refetch(); 
-      } catch (error) {
-        toastNotify("Failed to delete the user. Please try again.", 'error');
+        refetch();
+      } catch {
+        toastNotify("Failed to delete the user", 'error');
       }
       closeModal();
     }
   };
 
-  // Confirm deactivation
-  const confirmDeactivateUser = async () => {
-    if (userToDeactivate) {
-      try {
-        await deactivateUser(userToDeactivate.id).unwrap();
-        toastNotify("User has been deactivated", 'success');
-        refetch();
-      } catch (error) {
-        toastNotify("Failed to deactivate user", 'error');
-      }
-      closeDeactivateModal();
-    }
-  };
-
   const handleToggleUserStatus = async (user: any) => {
     try {
-      if (user.lockoutEnd && new Date(user.lockoutEnd) > new Date()) {
-        // User is deactivated -> Reactivate (no confirmation needed)
+      const isLockedOut = user.lockoutEnd && new Date(user.lockoutEnd) > new Date();
+      if (isLockedOut) {
         await reactivateUser(user.id).unwrap();
-        toastNotify("User has been reactivated", 'success');
-        refetch();
+        toastNotify("User reactivated", 'success');
       } else {
-        // User is active -> Show deactivation confirmation
-        openDeactivateModal(user);
+        await deactivateUser(user.id).unwrap();
+        toastNotify("User deactivated", 'success');
       }
-    } catch (error) {
-      toastNotify("Failed to change user status", 'error');
+      refetch();
+    } catch {
+      toastNotify("Failed to update user status", 'error');
     }
   };
 
-  // Role definitions with descriptions and icons
   const roleOptions = [
     {
       value: SD_Roles.ADMIN,
@@ -136,10 +101,9 @@ const UserManagement: React.FC = () => {
     }
   ];
 
-  // Enhanced role change handlers
   const openRoleChangeModal = (user: any) => {
     setSelectedUser(user);
-    setNewRole(user.role); // Set current role as default
+    setNewRole(user.role);
     setRoleValidationError('');
     setIsRoleChangeModalOpen(true);
   };
@@ -157,18 +121,15 @@ const UserManagement: React.FC = () => {
       setRoleValidationError('Please select a role');
       return false;
     }
-
     if (newRole === selectedUser?.role) {
       setRoleValidationError('Please select a different role from the current one');
       return false;
     }
-
     const validRoles = Object.values(SD_Roles);
     if (!validRoles.includes(newRole as SD_Roles)) {
       setRoleValidationError('Invalid role selected');
       return false;
     }
-
     setRoleValidationError('');
     return true;
   };
@@ -179,10 +140,8 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  // Change user role with enhanced error handling
   const handleChangeUserRole = async () => {
     if (!selectedUser || !newRole) return;
-
     setRoleChangeLoading(true);
     try {
       await changeUserRole({ userId: selectedUser.id, newRole }).unwrap();
@@ -197,88 +156,130 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  // Define the row rendering logic
-  const renderRow = (user: any) => (
-    <tr key={user.id}>
-      <td>
-        {user.profilePicture ? (
-          <Avatar src={user.profilePicture} alt="User image" />
+  const columns: GridColDef[] = useMemo(() => [
+    {
+      field: 'profilePicture',
+      headerName: 'Avatar',
+      width: 90,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        params.value ? (
+          <Avatar src={params.value} />
         ) : (
-          <Badge type="neutral" className="p-1 rounded-full">
-            <FaUserAlt className="w-6 h-6 text-gray-600" />
-          </Badge>
-        )}
-      </td>
-      <td>
-        <Badge>{user.firstName}</Badge>
-      </td>
-      <td>
-        <Badge>{user.lastName}</Badge>
-      </td>
-      <td>
-        <span>{user.email}</span>
-      </td>
-      <td>
-        <span>{user.role}</span>
-      </td>
-      <td>
-        <button
-          onClick={() => openModal(user.id)}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          Delete
-        </button>
-        <button
-  onClick={() => handleToggleUserStatus(user)}
-  className={`${
-    user.lockoutEnd && new Date(user.lockoutEnd) > new Date()
-      ? "bg-green-500 hover:bg-green-700"
-      : "bg-yellow-500 hover:bg-yellow-700"
-  } text-white px-4 py-2 ml-2 rounded`}
->
-  {user.lockoutEnd && new Date(user.lockoutEnd) > new Date()
-    ? "Reactivate"
-    : "Deactivate"}
-</button>
-        <button
-          onClick={() => openRoleChangeModal(user)}
-          className="bg-blue-500 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700 transition-colors duration-200"
-        >
-          Change Role
-        </button>
-      </td>
-    </tr>
-  );
+          <Avatar>
+            <FaUserAlt />
+          </Avatar>
+        )
+      ),
+      sortable: false,
+      filterable: false,
+    },
+    { field: 'firstName', headerName: 'First Name', width: 150 , align: 'center',headerAlign: 'center'},
+    { field: 'lastName', headerName: 'Last Name', width: 140, align: 'center', headerAlign: 'center' },
+    { field: 'email', headerName: 'Email', width: 250, align: 'center',headerAlign: 'center' },
+    { field: 'role', headerName: 'Role', width: 130, align: 'center',headerAlign: 'center'},
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 450,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        const user = params.row;
+        const isLockedOut = user.lockoutEnd && new Date(user.lockoutEnd) > new Date();
+        return (
+          <div className="flex items-center gap-4">
+            <Tooltip title="Delete">
+              <Button
+                onClick={() => openModal(user.id)}
+                variant="contained"
+                color="error"
+                size="small"
+                startIcon={<FaTrash />}
+              >
+                Delete
+              </Button>
+            </Tooltip>
+            <Tooltip title={isLockedOut ? 'Reactivate' : 'Deactivate'}>
+              <Button
+                onClick={() => handleToggleUserStatus(user)}
+                variant="contained"
+                color={isLockedOut ? 'success' : 'warning'}
+                size="small"
+                startIcon={<FaUserShield color={isLockedOut ? 'green' : 'orange'} />}
+              >
+                {isLockedOut ? 'Reactivate' : 'Deactivate'}
+              </Button>
+            </Tooltip>
+            <Tooltip title="Change Role">
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => openRoleChangeModal(user)}
+                startIcon={<FaUserEdit />}
+              >
+                Role
+              </Button>
+            </Tooltip>
+          </div>
+        );
+      }
+    }
+  ], []);
 
   return (
-    <>
-      <h1 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">User Management</h1>
-      {isLoading ? (
-        <p>Loading users...</p>
-      ) : error ? (
-        <p>Error loading users</p>
-      ) : (
-        <TableComponent
-          headers={['Avatar', 'First Name', 'Last Name', 'Email', 'Role', 'Actions']}
-          data={paginatedData}
-          resultsPerPage={resultsPerPage}
-          totalResults={usersData.length}
-          onPageChange={onPageChange}
-          renderRow={renderRow}
+    <div className="p-4">
+      <h1 className="text-2xl font-semibold mb-4">User Management</h1>
+      <div className="mb-4">
+  <input
+    type="text"
+    placeholder="Search by name, email, or role"
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    className="w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+</div>
+      <div style={{ height: 530, width: '100%' }}>
+        <DataGrid
+          rows={filteredUsers}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8,
+                page: 0,
+              },
+            },
+          }}
+          getRowId={(row) => row.id}
+          loading={isLoading}
+          sx={{
+            border: '1px solid #93c5fd', // Tailwind's blue-300
+            borderRadius: '0.5rem',
+            '& .MuiDataGrid-cell': {
+              borderBottom: '1px solid #e0f2fe', // Optional: light blue row lines
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: '#eff6ff', // Optional: light blue column header background
+            }
+          }}
         />
-      )}
+      </div>
 
-      {/* Delete confirmation modal */}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <ModalHeader>Confirm Deletion</ModalHeader>
-        <ModalBody>Are you sure you want to delete this user?</ModalBody>
-        <ModalFooter>
-          <Button onClick={closeModal}>Cancel</Button>
-          <Button onClick={confirmDelete}>Confirm</Button>
-        </ModalFooter>
-      </Modal>
+      <ConfirmationModal
+        show={isModalOpen}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this user?"
+        onConfirm={confirmDelete}
+        onCancel={closeModal}
+        confirmText="Delete"
+      />
 
-      {/* Enhanced Change Role Modal */}
+            {/* Enhanced Change Role Modal */}
       {isRoleChangeModalOpen && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
@@ -490,21 +491,7 @@ const UserManagement: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Deactivate confirmation modal */}
-      <ConfirmationModal
-        show={isDeactivateModalOpen}
-        title="Confirm User Deactivation"
-        message={
-          userToDeactivate
-            ? `Are you sure you want to deactivate this user?\n\nUser: ${userToDeactivate.firstName} ${userToDeactivate.lastName}\nEmail: ${userToDeactivate.email}\n\nThis action will prevent the user from accessing their account.`
-            : "Are you sure you want to deactivate this user?"
-        }
-        confirmText="Deactivate"
-        onConfirm={confirmDeactivateUser}
-        onCancel={closeDeactivateModal}
-      />
-    </>
+    </div>
   );
 };
 
