@@ -63,6 +63,8 @@ const MessagePage = () => {
   };
 
   return (
+    <>
+   <h1 className="text-4xl font-extrabold text-gray-800">Messages</h1>
     <div className="flex h-screen bg-gray-50">
       <ChattedUsersSidebar
         users={chattedUsers}
@@ -78,6 +80,8 @@ const MessagePage = () => {
         onDeleteMessage={handleDeleteMessage}
       />
     </div>
+    </>
+    
   );
 };
 
