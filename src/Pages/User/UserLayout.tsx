@@ -2,6 +2,7 @@ import React from 'react';
 import { Headerbar, SideBar } from '../../Componenets';
 import { Outlet } from 'react-router-dom';
 import PeopleYouMayKnow from '../../Componenets/Shared/PeopleYouMayKnow';
+import NavigationControls from '../../Componenets/Shared/NavigationControls';
 
 function UserLayout() {
   return (
@@ -18,6 +19,7 @@ function UserLayout() {
         <div className="flex flex-row flex-grow overflow-hidden">
           {/* Main Content */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <NavigationControls />
             <Outlet /> {/* This will include StorySection, Feed, etc. */}
           </div>
 

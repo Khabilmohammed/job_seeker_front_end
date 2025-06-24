@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { EducationModel } from '../../Interfaces/EducationModel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {  faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDeleteEducationMutation, useCreateEducationMutation } from '../../Apis/educationApi';
 import ConfirmationModal from '../Shared/ConfirmationModal';
 import { useSelector } from 'react-redux';
@@ -91,7 +91,7 @@ const UserEducation: React.FC<EducationProps> = ({ education, onUpdate, refetch 
       onClick={() => setShowInputFields(!showInputFields)}
       className="px-4 py-2 text-white bg-[#075e54] rounded hover:bg-[#128c7e]"
     >
-      {showInputFields ? 'Cancel' : 'Add New Education'}
+      {showInputFields ? 'Cancel' : 'Add Education'}
     </button>
   </div>
 
@@ -160,7 +160,7 @@ const UserEducation: React.FC<EducationProps> = ({ education, onUpdate, refetch 
                 }}
                 className="text-red-500 hover:text-red-700"
               >
-                <FontAwesomeIcon icon={faTrashAlt} className="mr-1" />
+                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 hover:text-red-800" />
                 Remove
               </button>
             </div>

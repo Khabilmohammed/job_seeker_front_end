@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Rootstate } from '../../Storage/Redux/store';
 import ConfirmationModal from '../Shared/ConfirmationModal'; // Adjust path as necessary
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {  faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface CertificatesProps {
   certificates: CertificateModel[];
@@ -86,13 +86,13 @@ const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-    <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
-      Certificates
+    <h2 className="mb-4 flex justify-between items-center">
+      <span className="text-xl font-bold">Certificates</span>
       <button
         onClick={() => setIsEditing(!isEditing)}
         className="px-4 py-2 text-white bg-[#075e54] rounded hover:bg-[#128c7e]"
       >
-        {isEditing ? 'Cancel' : 'Add'}
+        {isEditing ? 'Cancel' : 'Add Certificate'}
       </button>
     </h2>
 
@@ -120,9 +120,7 @@ const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
           <button
             onClick={() => handleDeleteClick(certificate.certificateId)}
             disabled={isDeleting}
-            className={`px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600 ${
-              isDeleting ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className="text-red-600 hover:text-red-800 p-1"
           >
             <FontAwesomeIcon icon={faTrashAlt} />
           </button>

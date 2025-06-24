@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGetJobPostingByIdQuery, useDeleteJobPostingMutation, useUpdateJobPostingMutation } from '../../Apis/jobPostingApi';
 import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
+import { FaBuilding } from 'react-icons/fa';
 
 const JobDetailsPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
@@ -29,6 +30,7 @@ const JobDetailsPage: React.FC = () => {
 
   // Access job details from the `result` property
   const job = data?.result;
+  console.log(job);
 
   if (isLoading) return <div>Loading...</div>;
   if (error || !job) return <div>Job not found or an error occurred</div>;
@@ -96,19 +98,27 @@ const JobDetailsPage: React.FC = () => {
     <div className="max-w-5xl mx-auto p-8 bg-white shadow-lg rounded-lg">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <img
-            src={job.companyLogo || '/company-logo.png'}
-            alt="Company Logo"
-            className="w-20 h-20 rounded-full object-cover border"
-          />
-          <div>
-            <h2 className="text-3xl font-bold">{job.title}</h2>
-            <p className="text-gray-500 text-lg">{job.location}</p>
-            <p className="text-sm text-gray-400">
-              Posted on: {new Date(job.postedDate).toLocaleDateString()} | Expires on: {new Date(job.expiryDate).toLocaleDateString()}
-            </p>
-          </div>
-        </div>
+  <div className="w-20 h-20 rounded-full border overflow-hidden bg-white flex items-center justify-center">
+    {job.logoUrl ? (
+      <img
+        src={job.logoUrl}
+        alt="Company Logo"
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <FaBuilding className="w-10 h-10 text-gray-500" />
+    )}
+  </div>
+
+  <div>
+    <h2 className="text-3xl font-bold">{job.title}</h2>
+    <p className="text-gray-500 text-lg">{job.location}</p>
+    <p className="text-sm text-gray-400">
+      Posted on: {new Date(job.postedDate).toLocaleDateString()} | Expires on:{" "}
+      {new Date(job.expiryDate).toLocaleDateString()}
+    </p>
+  </div>
+</div>
         <div className="flex space-x-4 mt-4 md:mt-0">
           <button
             onClick={openUpdateModal}

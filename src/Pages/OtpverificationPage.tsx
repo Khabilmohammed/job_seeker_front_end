@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CoverImage from '../Assets/Images/Leonardo_Phoenix_A_sleek_modern_laptop_sits_centered_on_a_mini_3.jpg';
 import { useResendOtpRegistrationMutation, useVerifyOtpMutation } from '../Apis/authApi';
@@ -9,16 +9,28 @@ function OtpverificationPage() {
     const { state } = useLocation();
     const [otp, setOtp] = useState('');
     const [apiErrors, setApiErrors] = useState<string[]>([]);
+    const [timer, setTimer] = useState<number>(600);
     const [verifyOtp, { isLoading: verifying }] = useVerifyOtpMutation();
     const [resendOtpRegistration, { isLoading: resending }] = useResendOtpRegistrationMutation();
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>(state?.email || '');
-  
+
+    useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+      return () => clearInterval(interval);
+    }, [timer]);
     
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       setOtp(e.target.value);
     };
-  
+    
     
     const isFetchBaseQueryError = (
       error: unknown
@@ -32,12 +44,14 @@ function OtpverificationPage() {
     };
   
     const handleResendOtp = async () => {
+      if (timer > 0) return;
       setApiErrors([]); // Clear any previous errors
     
       const response = await resendOtpRegistration(email);
     
       if (response.data) {
         toastNotify("OTP Resent Successfully");
+        setTimer(600);
       } else if (response.error) {
         toastNotify("Error resending OTP", "error");
         // Handle error display as you're doing for verifyOtp
@@ -153,13 +167,23 @@ function OtpverificationPage() {
         </div>
 
         <button
-  type="button"
-  onClick={handleResendOtp}
-  disabled={resending}
-  className="w-full bg-[#060606] font-semibold text-white my-2 rounded-md p-4 text-center flex items-center justify-center cursor-pointer hover:bg-[#FCECD3] hover:text-[#060606] hover:border hover:border-[#FCECD3] transition duration-300"
->
-  {resending ? "Resending..." : "Resend OTP"}
-</button>
+          type="button"
+          onClick={handleResendOtp}
+          disabled={resending || timer > 0}
+          className={`w-full font-semibold rounded-md p-4 text-center flex items-center justify-center transition duration-300 ${
+            timer > 0 || resending
+              ? 'bg-gray-400 cursor-not-allowed text-white'
+              : 'bg-[#060606] text-white hover:bg-[#FCECD3] hover:text-[#060606] hover:border hover:border-[#FCECD3]'
+          }`}
+        >
+           {resending
+            ? "Resending..."
+            : timer > 0
+            ? `Resend OTP in ${Math.floor(timer / 60)
+                .toString()
+                .padStart(2, "0")}:${(timer % 60).toString().padStart(2, "0")}`
+            : "Resend OTP"}
+        </button>
       </form>
 
       {/* Back to Login */}

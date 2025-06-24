@@ -104,9 +104,21 @@ const UserInfo: React.FC<UserInfoProps> = ({
       <div className="flex-1 ml-0 md:ml-6">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-semibold text-gray-800">{username}</h2>
-          <button
+         <button
             className="px-4 py-2 text-sm font-medium text-white bg-[#075e54] rounded hover:bg-[#128c7e] transition"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setFormData({
+                UserId: userId,
+                firstName,
+                lastName,
+                city,
+                country,
+                pincode,
+                profilePicture: profilePicture || null,
+              });
+              setPreviewImage(profilePicture || null); // Optional: show existing image on edit
+              setIsEditing(true);
+            }}
           >
             Edit Profile
           </button>
@@ -138,71 +150,93 @@ const UserInfo: React.FC<UserInfoProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-lg">
             <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                placeholder="First Name"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                placeholder="Last Name"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                placeholder="City"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleInputChange}
-                placeholder="Country"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleInputChange}
-                placeholder="Pincode"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="file"
-                name="profilePicture"
-                onChange={handleFileChange}
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded mr-2"
-                  onClick={() => setIsEditing(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Updating..." : "Save Changes"}
-                </button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
               </div>
-            </form>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Country</label>
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Pincode</label>
+                <input
+                  type="text"
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
+                <input
+                  type="file"
+                  name="profilePicture"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border rounded"
+                />
+                {previewImage && (
+                  <img src={previewImage} alt="Preview" className="w-24 h-24 mt-2 rounded-full object-cover" />
+                )}
+              </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+              >
+                {isLoading ? "Updating..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
+
           </div>
         </div>
       )}

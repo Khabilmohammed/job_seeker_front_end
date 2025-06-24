@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { HiMenuAlt3 } from "react-icons/hi";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaHome } from "react-icons/fa";
-import { IoMdNotifications, IoIosLogOut } from "react-icons/io";
+import {  IoIosLogOut } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
+import { MdAmpStories } from "react-icons/md";
 import { MdOutlineConstruction } from "react-icons/md";
 import { IoIosPaper } from "react-icons/io";
 import { IoIosPeople } from "react-icons/io";
@@ -34,7 +35,7 @@ function SideBar() {
   const menus = [
     { name: "Home", link: "home", icon: FaHome },
     { name: "Messages", link: "messagePage", icon: FaMessage },
-    { name: "stories", link: "storyManagementpage", icon: FaMessage },
+    { name: "stories", link: "storyManagementpage", icon: MdAmpStories },
     { name: "Jobs", link: "jobListingsPage", icon: MdOutlineConstruction, margin: true },
     { name: "Applied job", link: "appliedJobsPage", icon: IoIosPaper },
     { name: "My Network", link: "myNetwork", icon: IoIosPeople },

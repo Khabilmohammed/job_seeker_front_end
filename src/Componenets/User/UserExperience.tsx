@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ExperienceModel } from '../../Interfaces/ExperienceModel';
 import { useCreateExperienceMutation, useDeleteExperienceMutation } from '../../Apis/experienceApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {  faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import toastNotify from '../../Taghelper/toastNotify';
 
 interface ExperienceProps {
