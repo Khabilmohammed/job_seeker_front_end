@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPaperPlane, FaTrash, FaUserCircle } from "react-icons/fa";
-import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
+import ConfirmationModal from "./ConfirmationModal";
 import { Message } from "../../Interfaces/MessageModel";
 import { messageHubService } from "../../Apis/signalrConnection/messageHubService";
 
@@ -21,29 +21,20 @@ interface Props {
 
 const ChatWindow: React.FC<Props> = ({
   selectedUser,
-  messages: initialMessages,
+  messages,
   currentUserToken,
   isLoading,
   onDeleteMessage,
 }) => {
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState<any>(null);
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [showModal, setShowModal] = useState(false); // Track modal visibility
-  const [messageToDelete, setMessageToDelete] = useState<number | null>(null); // Track the message to delete
+  const [showModal, setShowModal] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     if (selectedUser?.userName && currentUserToken) {
       const connect = async () => {
         const connection = messageHubService(selectedUser.userName);
-
-        connection.on("ReceiveMessageThread", (fetchedMessages: Message[]) => {
-          setMessages(fetchedMessages);
-        });
-
-        connection.on("ReceiveMessage", (newMessage: Message) => {
-          setMessages((prev) => [...prev, newMessage]);
-        });
 
         try {
           await connection.start();
@@ -61,53 +52,26 @@ const ChatWindow: React.FC<Props> = ({
     }
   }, [selectedUser, currentUserToken]);
 
-  useEffect(() => {
-    if (connection) {
-      connection.on("NewMessage", (message: Message) => {
-        setMessages((prev) => [...prev, message]);
-      });
-    }
-    return () => {
-      connection?.off("NewMessage");
-    };
-  }, [connection]);
-
-  useEffect(() => {
-    if (connection) {
-      connection.on("MessageDeleted", (messageId: number) => {
-        setMessages((prevMessages) =>
-          prevMessages.filter((message) => message.messageId !== messageId)
-        );
-      });
-    }
-    return () => {
-      connection?.off("MessageDeleted");
-    };
-  }, [connection]);
-
   const handleDeleteMessage = async (messageId: number) => {
-    if (connection) {
-      setShowModal(true); // Show the confirmation modal
-      setMessageToDelete(messageId); // Set the message to delete
-    }
+    setShowModal(true);
+    setMessageToDelete(messageId);
   };
 
   const confirmDeleteMessage = async () => {
     if (connection && messageToDelete !== null) {
       try {
         await connection.invoke("DeleteMessage", messageToDelete);
-        console.log(`Message with ID ${messageToDelete} deleted successfully.`);
       } catch (err) {
         console.error("DeleteMessage Error: ", err);
       }
     }
-    setShowModal(false); // Close the modal
-    setMessageToDelete(null); // Clear the message to delete
+    setShowModal(false);
+    setMessageToDelete(null);
   };
 
   const handleCancelDelete = () => {
-    setShowModal(false); // Close the modal
-    setMessageToDelete(null); // Clear the message to delete
+    setShowModal(false);
+    setMessageToDelete(null);
   };
 
   const handleSendMessage = async () => {
@@ -126,20 +90,20 @@ const ChatWindow: React.FC<Props> = ({
   };
 
   return (
-    <div className="flex-1 bg-white flex flex-col">
+    <div className="flex-1 bg-white flex flex-col h-full">
       {selectedUser && (
         <>
           <div className="flex items-center justify-between p-4 border-b bg-white shadow-sm">
             <div className="flex items-center">
-            {selectedUser.profilePicture ? (
-      <img
-        src={selectedUser.profilePicture}
-        alt={selectedUser.userName}
-        className="w-12 h-12 rounded-full mr-4"
-      />
-    ) : (
-      <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
-    )}
+              {selectedUser.profilePicture ? (
+                <img
+                  src={selectedUser.profilePicture}
+                  alt={selectedUser.userName}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+              ) : (
+                <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
+              )}
               <div>
                 <div className="font-semibold text-lg">{selectedUser.userName}</div>
                 <div className="text-sm text-gray-500">Online</div>
@@ -201,7 +165,6 @@ const ChatWindow: React.FC<Props> = ({
         </>
       )}
 
-      {/* Confirmation Modal */}
       <ConfirmationModal
         show={showModal}
         message="Are you sure you want to delete this message?"
