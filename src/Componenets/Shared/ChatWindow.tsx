@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPaperPlane, FaTrash, FaUserCircle } from "react-icons/fa";
-import ConfirmationModal from "./ConfirmationModal";
+import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { Message } from "../../Interfaces/MessageModel";
 import { messageHubService } from "../../Apis/signalrConnection/messageHubService";
 
@@ -13,7 +13,7 @@ interface User {
 
 interface Props {
   selectedUser: User | null;
-  messages: Message[]; // Parent-passed messages
+  messages: Message[];
   isLoading: boolean;
   currentUserToken: string;
   onDeleteMessage: (messageId: number) => void;
@@ -21,36 +21,28 @@ interface Props {
 
 const ChatWindow: React.FC<Props> = ({
   selectedUser,
-  messages,
+  messages: initialMessages,
   currentUserToken,
   isLoading,
   onDeleteMessage,
 }) => {
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState<any>(null);
-  const [localMessages, setLocalMessages] = useState<Message[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [messageToDelete, setMessageToDelete] = useState<number | null>(null);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [showModal, setShowModal] = useState(false); // Track modal visibility
+  const [messageToDelete, setMessageToDelete] = useState<number | null>(null); // Track the message to delete
 
-  // Sync parent messages → local state
-  useEffect(() => {
-    setLocalMessages(messages);
-  }, [messages]);
-
-  // Connect to SignalR
   useEffect(() => {
     if (selectedUser?.userName && currentUserToken) {
       const connect = async () => {
         const connection = messageHubService(selectedUser.userName);
 
-        connection.on("ReceiveMessage", (newMsg: Message) => {
-          setLocalMessages((prev) => [...prev, newMsg]);
+        connection.on("ReceiveMessageThread", (fetchedMessages: Message[]) => {
+          setMessages(fetchedMessages);
         });
 
-        connection.on("MessageDeleted", (messageId: number) => {
-          setLocalMessages((prev) =>
-            prev.filter((msg) => msg.messageId !== messageId)
-          );
+        connection.on("ReceiveMessage", (newMessage: Message) => {
+          setMessages((prev) => [...prev, newMessage]);
         });
 
         try {
@@ -69,26 +61,53 @@ const ChatWindow: React.FC<Props> = ({
     }
   }, [selectedUser, currentUserToken]);
 
-  const handleDeleteMessage = (messageId: number) => {
-    setShowModal(true);
-    setMessageToDelete(messageId);
+  useEffect(() => {
+    if (connection) {
+      connection.on("NewMessage", (message: Message) => {
+        setMessages((prev) => [...prev, message]);
+      });
+    }
+    return () => {
+      connection?.off("NewMessage");
+    };
+  }, [connection]);
+
+  useEffect(() => {
+    if (connection) {
+      connection.on("MessageDeleted", (messageId: number) => {
+        setMessages((prevMessages) =>
+          prevMessages.filter((message) => message.messageId !== messageId)
+        );
+      });
+    }
+    return () => {
+      connection?.off("MessageDeleted");
+    };
+  }, [connection]);
+
+  const handleDeleteMessage = async (messageId: number) => {
+    if (connection) {
+      setShowModal(true); // Show the confirmation modal
+      setMessageToDelete(messageId); // Set the message to delete
+    }
   };
 
   const confirmDeleteMessage = async () => {
     if (connection && messageToDelete !== null) {
       try {
         await connection.invoke("DeleteMessage", messageToDelete);
+        console.log(`Message with ID ${messageToDelete} deleted successfully.`);
       } catch (err) {
         console.error("DeleteMessage Error: ", err);
       }
     }
-    setShowModal(false);
-    setMessageToDelete(null);
+    setShowModal(false); // Close the modal
+    setMessageToDelete(null); // Clear the message to delete
   };
 
   const handleCancelDelete = () => {
-    setShowModal(false);
-    setMessageToDelete(null);
+    setShowModal(false); // Close the modal
+    setMessageToDelete(null); // Clear the message to delete
   };
 
   const handleSendMessage = async () => {
@@ -112,19 +131,17 @@ const ChatWindow: React.FC<Props> = ({
         <>
           <div className="flex items-center justify-between p-4 border-b bg-white shadow-sm">
             <div className="flex items-center">
-              {selectedUser.profilePicture ? (
-                <img
-                  src={selectedUser.profilePicture}
-                  alt={selectedUser.userName}
-                  className="w-12 h-12 rounded-full mr-4"
-                />
-              ) : (
-                <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
-              )}
+            {selectedUser.profilePicture ? (
+      <img
+        src={selectedUser.profilePicture}
+        alt={selectedUser.userName}
+        className="w-12 h-12 rounded-full mr-4"
+      />
+    ) : (
+      <FaUserCircle className="w-12 h-12 text-gray-500 mr-4" />
+    )}
               <div>
-                <div className="font-semibold text-lg">
-                  {selectedUser.userName}
-                </div>
+                <div className="font-semibold text-lg">{selectedUser.userName}</div>
                 <div className="text-sm text-gray-500">Online</div>
               </div>
             </div>
@@ -134,7 +151,7 @@ const ChatWindow: React.FC<Props> = ({
             {isLoading ? (
               <p>Loading messages...</p>
             ) : (
-              localMessages.map((message) => (
+              messages.map((message) => (
                 <div
                   key={message.messageId}
                   className={`flex ${
@@ -184,6 +201,7 @@ const ChatWindow: React.FC<Props> = ({
         </>
       )}
 
+      {/* Confirmation Modal */}
       <ConfirmationModal
         show={showModal}
         message="Are you sure you want to delete this message?"
