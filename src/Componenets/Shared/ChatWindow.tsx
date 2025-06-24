@@ -13,7 +13,7 @@ interface User {
 
 interface Props {
   selectedUser: User | null;
-  messages: Message[];
+  messages: Message[]; // Parent-passed messages
   isLoading: boolean;
   currentUserToken: string;
   onDeleteMessage: (messageId: number) => void;
@@ -28,16 +28,29 @@ const ChatWindow: React.FC<Props> = ({
 }) => {
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState<any>(null);
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<number | null>(null);
 
+  // Sync parent messages → local state
+  useEffect(() => {
+    setLocalMessages(messages);
+  }, [messages]);
+
+  // Connect to SignalR
   useEffect(() => {
     if (selectedUser?.userName && currentUserToken) {
       const connect = async () => {
         const connection = messageHubService(selectedUser.userName);
 
         connection.on("ReceiveMessage", (newMsg: Message) => {
-          // no local state update here – parent handles it
+          setLocalMessages((prev) => [...prev, newMsg]);
+        });
+
+        connection.on("MessageDeleted", (messageId: number) => {
+          setLocalMessages((prev) =>
+            prev.filter((msg) => msg.messageId !== messageId)
+          );
         });
 
         try {
@@ -121,7 +134,7 @@ const ChatWindow: React.FC<Props> = ({
             {isLoading ? (
               <p>Loading messages...</p>
             ) : (
-              messages.map((message) => (
+              localMessages.map((message) => (
                 <div
                   key={message.messageId}
                   className={`flex ${
