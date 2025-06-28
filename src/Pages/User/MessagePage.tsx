@@ -38,25 +38,7 @@ const MessagePage = () => {
     }
   }, [fetchedMessages]);
 
-  // const handleSendMessage = async (messageContent: string) => {
-  //   if (selectedUser) {
-  //     const newMessage = {
-  //       messageId: Math.random(), // Temporary ID until backend confirms
-  //       content: messageContent,
-  //       senderUserName: "currentUserName", // Replace with the actual sender's username
-  //       recipientUserName: selectedUser.userName,
-  //       sentAt: new Date().toISOString(),
-  //     };
-  
-  //     try {
-  //       await createMessage(newMessage); // Send to backend
-  //       setMessages((prevMessages:any) => [...prevMessages, newMessage]); // Update state
-  //     } catch (err) {
-  //       console.error("Failed to send message:", err);
-  //     }
-  //   }
-  // };
-
+ 
   const handleDeleteMessage = async (messageId: number) => {
     await deleteMessage(messageId).unwrap();
     setMessages((prev) => prev.filter((msg) => msg.messageId !== messageId));

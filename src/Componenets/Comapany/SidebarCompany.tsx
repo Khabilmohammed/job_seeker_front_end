@@ -46,7 +46,7 @@ function SidebarCompany() {
     <div className="flex gap-6 ">
     {/* Sidebar */}
     <div
-      className={`bg-[#745858] min-h-screen ${
+      className={`bg-[#187a43] min-h-screen ${
         open ? "w-72" : "w-16"
       } duration-500 text-gray-100 px-4 sticky top-16 h-screen  z-10`}
     >

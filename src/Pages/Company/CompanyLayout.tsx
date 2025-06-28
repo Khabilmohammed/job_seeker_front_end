@@ -2,6 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { HeaderbarCompany, SidebarCompany } from '../../Componenets/Comapany';
 import PeopleYouMayKnow from '../../Componenets/Shared/PeopleYouMayKnow';
+import NavigationControls from '../../Componenets/Shared/NavigationControls';
 
 function CompanyLayout() {
   return (
@@ -18,12 +19,13 @@ function CompanyLayout() {
       <div className="flex flex-row flex-grow overflow-hidden">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto p-6">
+          <NavigationControls />
           <Outlet /> 
         </div>
 
        
         <div className="hidden lg:block lg:w-80"> 
-          <div className="fixed right-0 top-16 h-full w-80 bg-[#745858] shadow-lg border-l border-gray-200">
+          <div className="fixed right-0 top-16 h-full w-80 bg-[#187a43] shadow-lg border-l border-gray-200">
             <PeopleYouMayKnow/>
           </div>
         </div>

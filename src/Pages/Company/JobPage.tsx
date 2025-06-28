@@ -53,7 +53,7 @@ function JobPage() {
         <h2 className="text-2xl font-semibold text-gray-800">Job Postings</h2>
         <button
           onClick={handleCreateJob}
-          className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+          className="px-5 py-2 bg-[#187a43] text-white rounded-lg shadow hover:bg-[#2fa060]"
         >
           + Create Job
         </button>

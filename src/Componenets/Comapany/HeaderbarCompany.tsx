@@ -11,7 +11,7 @@ const HeaderbarCompany = () => {
   const userId = useSelector((state: Rootstate) => state.userAuthStore.id);
   const { data: user, isLoading, isError } = useGetUserByIdQuery(userId);
   return (
-    <header className="bg-[#745858] shadow-md py-4 px-6 flex flex-col md:flex-row justify-between items-center fixed top-0  left-0 w-full z-50">
+    <header className="bg-[#187a43] shadow-md py-4 px-6 flex flex-col md:flex-row justify-between items-center fixed top-0  left-0 w-full z-50">
       {/* Logo */}
       <div className="flex items-center space-x-3 mb-4 md:mb-0">
         <img className="h-10 w-10 mr-2" src={logo} alt="Logo" />

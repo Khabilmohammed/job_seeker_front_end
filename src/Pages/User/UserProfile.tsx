@@ -31,7 +31,10 @@ function UserProfile() {
     pincode: string;
     firstName:string;
     MiddleName:string;
-    lastName:string;
+    lastName:string
+    followingCount?: number;
+    followersCount?: number;
+    postCount?: number;
   }>({
     username: "username",
     fullName: "Full Name",
@@ -46,20 +49,22 @@ function UserProfile() {
     city: "City",
     country: "Country",
     pincode: "000000",
+
   });
 
   const { data: userData, isSuccess: isUserSuccess } = useGetUserByIdQuery(userId);
-  console.log("userdata",userData)
+  console.log("userData", userData);
   const { data: experiencesData } = useGetExperiencesQuery(userId);
   const { data: certificatesData, refetch: refetchCertificates } = useGetCertificatesByUserQuery(userId);
   const [updateExperience] = useUpdateExperienceMutation();
   const { data: educationData, refetch: refetchEducation } = useGetEducationsByUserQuery(userId);
+
   const [createCertificate, { isLoading: loadingCreateCertificate }] = useCreateCertificateMutation();
 
   useEffect(() => {
     if (isUserSuccess && userData?.isSuccess) {
       const result = userData.result;
-
+      
       setUserInfo((prev) => ({
         ...prev,
         username: result.userName || prev.username,
@@ -121,6 +126,8 @@ function UserProfile() {
     }
   };
 
+  
+
   return (
     <div className="max-w-5xl mx-auto p-4">
       <UserInfo
@@ -133,9 +140,9 @@ function UserProfile() {
         city={userInfo.city}
         country={userInfo.country}
         pincode={userInfo.pincode}
-        followingCount={120}
-        followersCount={340}
-        postCount={50}
+        followingCount={userInfo.followingCount || 0}
+        followersCount={userInfo.followersCount || 0}
+        postCount={userInfo.postCount || 0}
       />
       <UserExperience
         experiences={userInfo.experiences}
