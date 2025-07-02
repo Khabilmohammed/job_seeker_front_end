@@ -87,7 +87,6 @@ const GetCompanyProfiePage: React.FC = () => {
 
       {/* Company Job Openings and User Posts Section */}
       <div className="mt-8">
-        <CompanyJobOpenings />
         <ReadOnlyUserPosts />
       </div>
     </div>
