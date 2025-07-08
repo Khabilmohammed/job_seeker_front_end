@@ -3,6 +3,7 @@ import { FaPaperPlane, FaTrash, FaUserCircle } from "react-icons/fa";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { Message } from "../../Interfaces/MessageModel";
 import { messageHubService } from "../../Apis/signalrConnection/messageHubService";
+import toastNotify from "../../Taghelper/toastNotify";
 
 interface User {
   userName: string;
@@ -17,6 +18,7 @@ interface Props {
   isLoading: boolean;
   currentUserToken: string;
   onDeleteMessage: (messageId: number) => void;
+  onMessageActivity?: () => void;
 }
 
 const ChatWindow: React.FC<Props> = ({
@@ -25,6 +27,7 @@ const ChatWindow: React.FC<Props> = ({
   currentUserToken,
   isLoading,
   onDeleteMessage,
+   onMessageActivity,
 }) => {
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState<any>(null);
@@ -42,7 +45,12 @@ const ChatWindow: React.FC<Props> = ({
         });
 
         connection.on("ReceiveMessage", (newMessage: Message) => {
+           console.log("🔥 Received message:", newMessage);
           setMessages((prev) => [...prev, newMessage]);
+
+            toastNotify(`📩 New message from ${newMessage.senderUserName}`, "success");
+          
+          onMessageActivity?.();
         });
 
         try {
@@ -119,6 +127,7 @@ const ChatWindow: React.FC<Props> = ({
       try {
         await connection.invoke("SendMessage", messageDTO);
         setNewMessage("");
+        onMessageActivity?.();
       } catch (err) {
         console.error("SendMessage Error: ", err);
       }

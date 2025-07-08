@@ -15,19 +15,24 @@ interface User {
   firstName: string;
   lastName: string;
   profilePicture: string;
+  lastMessageTime: string;
 }
 
 const MessagePage = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const token=localStorage.getItem('token') || ''
-  const { data: chattedUsers = [], isLoading: isLoadingUsers, error: usersError } =
+  const { data: chattedUsers = [], isLoading: isLoadingUsers, error: usersError , refetch: refetchChattedUsers} =
     useGetChattedUsersQuery({});
   console.log("chattedUsers",chattedUsers);
   const { data: fetchedMessages, isLoading: isLoadingMessages } =
     useGetMessageThreadQuery(selectedUser?.userName || "", {
       skip: !selectedUser,
     });
+    
+const handleMessageActivity = () => {
+  refetchChattedUsers(); // 🔄 refresh sidebar with latest ordering
+};
 
   const [deleteMessage] = useDeleteMessageMutation();
   //const [createMessage] = useCreateMessageMutation();
@@ -44,12 +49,18 @@ const MessagePage = () => {
     setMessages((prev) => prev.filter((msg) => msg.messageId !== messageId));
   };
 
+  
+
+  const sortedChattedUsers = [...chattedUsers].sort(
+    (a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime()
+  );
+
   return (
     <>
    <h1 className="text-4xl font-extrabold text-gray-800">Messages</h1>
     <div className="flex h-screen bg-gray-50">
       <ChattedUsersSidebar
-        users={chattedUsers}
+        users={sortedChattedUsers}
         isLoading={isLoadingUsers}
         error={usersError}
         onSelectUser={setSelectedUser}
@@ -60,6 +71,7 @@ const MessagePage = () => {
         messages={messages}
         isLoading={isLoadingMessages}
         onDeleteMessage={handleDeleteMessage}
+         onMessageActivity={handleMessageActivity} 
       />
     </div>
     </>

@@ -5,6 +5,7 @@ interface User {
   firstName: string;
   lastName: string;
   profilePicture: string;
+   lastMessageTime: string;
 }
 
 interface Props {
