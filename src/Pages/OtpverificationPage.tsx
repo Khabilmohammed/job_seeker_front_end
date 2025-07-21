@@ -89,7 +89,8 @@ function OtpverificationPage() {
         navigate('/'); // Navigate to the desired page upon success
         toastNotify("Please Login","info");
       } else if (response.error) {
-        toastNotify("some error occur in ur data","error");
+        console.error('Error verifying OTP:', response.error);
+         toastNotify("Your otp is wrong","error");
         if (isFetchBaseQueryError(response.error)) {
           const errorData = (response.error.data as any)?.errors; // Adjust type if your API error structure is different
           const flattenedErrors: string[] = [];

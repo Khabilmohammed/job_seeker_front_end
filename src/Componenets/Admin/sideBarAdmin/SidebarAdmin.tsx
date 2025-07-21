@@ -30,7 +30,8 @@ function SidebarAdmin() {
   };
   const menus = [
     { name: "Dashboard", link: "adminHome", icon: FaHome },
-    { name: "User Management", link: "usermanagement", icon: GrUserManager },
+    { name: "User Management", link: "users", icon: GrUserManager },
+    { name: "Company Management", link: "companies", icon: GrUserManager },
     { name: "Post Management", link: "postManagement", icon: BsPostcardHeartFill },
     { name: "Jobs", link: "jobPage", icon: MdOutlineConstruction,margin: true },
     { name: "Logout", link: "#", icon: IoIosLogOut, onClick: handleLogout },

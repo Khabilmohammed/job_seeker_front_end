@@ -7,7 +7,12 @@ import toastNotify from '../../Taghelper/toastNotify';
 import ConfirmationModal from '../../Componenets/Shared/ConfirmationModal';
 import { SD_Roles } from '../../Utility/SD';
 
-const UserManagement: React.FC = () => {
+interface Props {
+  filterRole?: string;
+  title?: string;
+}
+
+const UserManagement: React.FC<Props> = ({ filterRole, title = "User Management" }) => {
   const { data = { result: [] }, error, isLoading, refetch } = useGetAllUsersQuery({});
   const usersData = data.result || [];
 
@@ -26,15 +31,18 @@ const UserManagement: React.FC = () => {
   const [roleChangeLoading, setRoleChangeLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-const filteredUsers = usersData.filter((user:any) => {
-  const search = searchText.toLowerCase();
-  return (
-    user.firstName.toLowerCase().includes(search) ||
-    user.lastName.toLowerCase().includes(search) ||
-    user.email.toLowerCase().includes(search) ||
-    user.role.toLowerCase().includes(search)
-  );
-});
+ const filteredUsers = usersData.filter((user: any) => {
+    const search = searchText.toLowerCase();
+    const matchesSearch =
+      user.firstName.toLowerCase().includes(search) ||
+      user.lastName.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search) ||
+      user.role.toLowerCase().includes(search);
+
+    const matchesRole = filterRole ? user.role === filterRole : true;
+
+    return matchesSearch && matchesRole;
+  });
 
   
 
@@ -233,7 +241,7 @@ const filteredUsers = usersData.filter((user:any) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">User Management</h1>
+      <h1 className="text-2xl font-semibold mb-4">{title}</h1>
       <div className="mb-4">
   <input
     type="text"

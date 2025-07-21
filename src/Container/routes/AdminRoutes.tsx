@@ -9,6 +9,8 @@ import JobPage from '../../Pages/Admin/JobPage';
 import JobDetailsPage from '../../Pages/Admin/JobDetailsPage';
 import ApplicantsPage from '../../Pages/Admin/ApplicantsPage';
 import GetUserProfilePage from '../../Componenets/Shared/GetUserProfilePage';
+import UserList from '../../Pages/Admin/UserList';
+import CompanyList from '../../Pages/Admin/CompanyList';
 
 const AdminRoutes = () => (
   <Routes>
@@ -17,10 +19,6 @@ const AdminRoutes = () => (
     element={<ProtectedRoute element={<AdminHome />} allowedRoles={['admin']} />}
   />
  
-  <Route
-    path="usermanagement"
-    element={<ProtectedRoute element={<UserManagement />} allowedRoles={['admin']} />}
-  />
 
 <Route
     path="postManagement"
@@ -46,6 +44,15 @@ const AdminRoutes = () => (
       path="ApplicantsPage/:jobId/applicants"
       element={<ProtectedRoute element={<ApplicantsPage />} allowedRoles={['admin']} />}
     />
+<Route
+      path="users" 
+      element={<ProtectedRoute element={<UserList />} allowedRoles={['admin']} />}
+    />
+<Route
+      path="companies"
+      element={<ProtectedRoute element={<CompanyList />} allowedRoles={['admin']} />}
+    />
+
   {/* Add more admin routes as needed */}
 </Routes>
 );
